@@ -1,0 +1,31 @@
+{
+  "name": "claude-seek",
+  "version": "1.0.0",
+  "description": "Claude Code with DeepSeek models - free AI coding assistant",
+  "keywords": [
+    "claude",
+    "deepseek",
+    "ai",
+    "cli",
+    "coding-assistant",
+    "anthropic"
+  ],
+  "author": "Claudio silva",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinhoSilwa/claude-seek"
+  },
+  "bin": {
+    "claude-seek": "./bin/claude-seek"
+  },
+  "scripts": {
+    "postinstall": "./scripts/postinstall.sh"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "LICENSE",
+    "README.md"
+  ]
+}

@@ -20,7 +20,6 @@
     "claude-seek": "./bin/claude-seek"
   },
   "scripts": {
-    "postinstall": "./scripts/postinstall.sh",
     "test": "bats tests/"
   },
   "files": [

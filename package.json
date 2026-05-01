@@ -1,6 +1,6 @@
 {
   "name": "claude-seek",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code with DeepSeek models - free AI coding assistant",
   "keywords": [
     "claude",
@@ -25,6 +25,8 @@
   "files": [
     "bin/",
     "scripts/",
+    "install-claude-seek.sh",
+    "uninstall-claude-seek.sh",
     "LICENSE",
     "README.md"
   ]

@@ -8,13 +8,14 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m'
 
 INSTALL_DIR="$HOME/.claude-seek"
 WRAPPER_SCRIPT="claude-seek"
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🚀 Installing claude-seek v1.1.0${NC}"
+echo -e "${BLUE}🚀 Installing claude-seek v1.2.0${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -42,14 +43,14 @@ echo -e "${GREEN}   ✅ $INSTALL_DIR${NC}"
 # Initialize npm project
 if [ ! -f "package.json" ]; then
     echo -e "${BLUE}📦 Initializing npm project...${NC}"
-    cat > package.json << 'EOF'
+    cat > package.json << 'PKGEOF'
 {
   "name": "claude-seek",
-  "version": "1.1.0",
-  "description": "Claude Code with DeepSeek models and intelligent caching",
+  "version": "1.2.0",
+  "description": "Claude Code with DeepSeek models and session history",
   "private": true
 }
-EOF
+PKGEOF
     echo -e "${GREEN}   ✅ package.json created${NC}"
 fi
 
@@ -59,13 +60,12 @@ npm install @anthropic-ai/claude-code
 echo -e "${GREEN}   ✅ Installation complete${NC}"
 echo ""
 
-# Create wrapper script (DIA 2 - WITH CACHE)
-echo -e "${BLUE}📝 Creating wrapper script with cache support...${NC}"
-cat > "$INSTALL_DIR/$WRAPPER_SCRIPT" << 'EOF'
+# Create wrapper script
+echo -e "${BLUE}📝 Creating wrapper script with history support...${NC}"
+cat > "$INSTALL_DIR/$WRAPPER_SCRIPT" << 'WRAPPEREOF'
 #!/bin/bash
 
-# claude-seek v1.1.0 - Claude Code with DeepSeek
-# Features: Model fallback, Response caching, Interactive setup
+# claude-seek v1.2.0 - Claude Code with DeepSeek
 
 # Colors
 if [ -z "${NO_COLOR:-}" ]; then
@@ -83,34 +83,23 @@ fi
 # Paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="$HOME/.claude-seek"
-CACHE_DIR="$CONFIG_DIR/cache"
+HISTORY_DIR="$CONFIG_DIR/history"
 LOG_DIR="$CONFIG_DIR/logs"
 
-mkdir -p "$CONFIG_DIR" "$CACHE_DIR" "$LOG_DIR"
+mkdir -p "$CONFIG_DIR" "$HISTORY_DIR" "$LOG_DIR"
 
 # Config file
 CONFIG_FILE="$CONFIG_DIR/config.env"
 
 # Default config values
-CACHE_ENABLED="${CACHE_ENABLED:-true}"
-CACHE_TTL_HOURS="${CACHE_TTL_HOURS:-1}"
-CACHE_MAX_SIZE_MB="${CACHE_MAX_SIZE_MB:-100}"
+HISTORY_ENABLED="${HISTORY_ENABLED:-true}"
 DEFAULT_MODEL="${DEFAULT_MODEL:-auto}"
+SESSION_TIMEOUT_HOURS="${SESSION_TIMEOUT_HOURS:-24}"
 
 # Load user config if exists
 if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
-
-# ============================================
-# LOGGING
-# ============================================
-
-log() {
-    local level="$1"
-    shift
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] $*" >> "$LOG_DIR/claude-seek.log"
-}
 
 # ============================================
 # API KEY MANAGEMENT
@@ -132,12 +121,10 @@ save_api_key() {
     local key="$1"
     echo "$key" > "$CONFIG_DIR/key"
     chmod 600 "$CONFIG_DIR/key"
-    log "INFO" "API key saved"
 }
 
 remove_api_key() {
     rm -f "$CONFIG_DIR/key"
-    log "INFO" "API key removed"
 }
 
 # ============================================
@@ -160,9 +147,7 @@ call_deepseek_api() {
 validate_api_key() {
     local key="$1"
     local response
-    
     response=$(call_deepseek_api "$key" "deepseek-chat" 1)
-    
     if echo "$response" | grep -q '"id"'; then
         return 0
     fi
@@ -173,9 +158,7 @@ test_model_availability() {
     local model="$1"
     local key="$2"
     local response
-    
     response=$(call_deepseek_api "$key" "$model" 1)
-    
     if echo "$response" | grep -q '"id"'; then
         return 0
     fi
@@ -183,139 +166,114 @@ test_model_availability() {
 }
 
 # ============================================
-# CACHE SYSTEM
+# HISTORY & SESSION MANAGEMENT
 # ============================================
 
-generate_cache_key() {
-    local query="$1"
-    local model="$2"
-    echo -n "$query|$model" | sha256sum | cut -d' ' -f1
+get_session_id() {
+    echo "$(date +%Y%m%d_%H%M%S)_$$"
 }
 
-get_cache_file_path() {
-    local cache_key="$1"
-    echo "$CACHE_DIR/${cache_key}.cache"
+get_session_file() {
+    local session_id="$1"
+    echo "$HISTORY_DIR/${session_id}.session"
 }
 
-is_cache_valid() {
-    local cache_file="$1"
+save_session_start() {
+    local session_id="$1"
+    local project_dir="$2"
+    local model="$3"
     
-    if [ ! -f "$cache_file" ]; then
+    cat > "$(get_session_file "$session_id")" << SESSIONEOF
+SESSION_ID=$session_id
+START_TIME=$(date +%s)
+START_DATE=$(date)
+PROJECT_DIR=$project_dir
+MODEL=$model
+SESSIONEOF
+}
+
+save_session_command() {
+    local session_id="$1"
+    local command="$2"
+    local session_file="$HISTORY_DIR/${session_id}.session"
+    if [ -f "$session_file" ]; then
+        echo "COMMAND_$(date +%s)=\"$command\"" >> "$session_file"
+    fi
+}
+
+list_sessions() {
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}📜 Session History${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    
+    if [ ! -d "$HISTORY_DIR" ] || [ -z "$(ls -A "$HISTORY_DIR" 2>/dev/null)" ]; then
+        echo -e "${YELLOW}   No sessions found${NC}"
+        echo ""
+        return
+    fi
+    
+    printf "   %-20s %-20s %-15s %-10s\n" "SESSION ID" "DATE" "MODEL" "CMDS"
+    printf "   %-20s %-20s %-15s %-10s\n" "---------" "----" "-----" "----"
+    
+    for session_file in "$HISTORY_DIR"/*.session; do
+        if [ -f "$session_file" ]; then
+            local session_id=$(grep "^SESSION_ID=" "$session_file" | cut -d'=' -f2)
+            local start_date=$(grep "^START_DATE=" "$session_file" | cut -d'=' -f2-)
+            local model=$(grep "^MODEL=" "$session_file" | cut -d'=' -f2)
+            local cmd_count=$(grep "^COMMAND_" "$session_file" | wc -l)
+            
+            session_id="${session_id:0:20}"
+            start_date="${start_date:0:20}"
+            model="${model:0:15}"
+            
+            printf "   %-20s %-20s %-15s %-10s\n" "$session_id" "$start_date" "$model" "$cmd_count"
+        fi
+    done
+    echo ""
+}
+
+show_session() {
+    local session_id="$1"
+    local session_file="$HISTORY_DIR/${session_id}.session"
+    
+    if [ ! -f "$session_file" ]; then
+        echo -e "${RED}❌ Session not found: $session_id${NC}"
         return 1
     fi
     
-    # Check age
-    local file_age_hours
-    local file_mod_time
-    local current_time
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}📄 Session Details: $session_id${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
     
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        file_mod_time=$(stat -f "%m" "$cache_file" 2>/dev/null)
+    local start_date=$(grep "^START_DATE=" "$session_file" | cut -d'=' -f2-)
+    local project_dir=$(grep "^PROJECT_DIR=" "$session_file" | cut -d'=' -f2-)
+    local model=$(grep "^MODEL=" "$session_file" | cut -d'=' -f2)
+    
+    echo -e "${CYAN}   Date:${NC} $start_date"
+    echo -e "${CYAN}   Project:${NC} $project_dir"
+    echo -e "${CYAN}   Model:${NC} $model"
+    echo ""
+    
+    echo -e "${CYAN}   Commands:${NC}"
+    grep "^COMMAND_" "$session_file" | while read line; do
+        local cmd=$(echo "$line" | cut -d'=' -f2-)
+        echo -e "      ${YELLOW}→${NC} $cmd"
+    done
+    echo ""
+}
+
+clear_history() {
+    echo -e "${YELLOW}⚠️  This will delete all session history.${NC}"
+    read -p "Are you sure? (y/N): " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        rm -rf "$HISTORY_DIR"/*
+        mkdir -p "$HISTORY_DIR"
+        echo -e "${GREEN}✅ History cleared${NC}"
     else
-        # Linux
-        file_mod_time=$(stat -c "%Y" "$cache_file" 2>/dev/null)
+        echo -e "${GREEN}Cancelled${NC}"
     fi
-    
-    current_time=$(date +%s)
-    file_age_hours=$(( (current_time - file_mod_time) / 3600 ))
-    
-    if [ "$file_age_hours" -lt "$CACHE_TTL_HOURS" ]; then
-        return 0
-    fi
-    
-    return 1
-}
-
-read_cache() {
-    local cache_file="$1"
-    
-    if is_cache_valid "$cache_file"; then
-        cat "$cache_file"
-        return 0
-    fi
-    
-    return 1
-}
-
-write_cache() {
-    local cache_file="$1"
-    local response="$2"
-    
-    # Check cache size limit
-    local cache_size
-    cache_size=$(du -sm "$CACHE_DIR" 2>/dev/null | cut -f1)
-    
-    if [ -n "$cache_size" ] && [ "$cache_size" -gt "$CACHE_MAX_SIZE_MB" ]; then
-        # Clean old entries
-        clean_old_cache
-    fi
-    
-    echo "$response" > "$cache_file"
-    log "DEBUG" "Cached response to $cache_file"
-}
-
-clean_old_cache() {
-    log "INFO" "Cleaning old cache entries"
-    find "$CACHE_DIR" -name "*.cache" -type f -mtime +"$CACHE_TTL_HOURS" -delete 2>/dev/null
-}
-
-clear_all_cache() {
-    echo -e "${YELLOW}🗑️  Clearing all cache...${NC}"
-    rm -rf "$CACHE_DIR"/*
-    mkdir -p "$CACHE_DIR"
-    echo -e "${GREEN}✅ Cache cleared${NC}"
-}
-
-get_cache_stats() {
-    local total_entries=0
-    local total_size=0
-    local hits=0
-    local misses=0
-    
-    if [ -d "$CACHE_DIR" ]; then
-        total_entries=$(find "$CACHE_DIR" -name "*.cache" -type f | wc -l)
-        total_size=$(du -sm "$CACHE_DIR" 2>/dev/null | cut -f1)
-    fi
-    
-    # Try to read stats file
-    if [ -f "$CONFIG_DIR/cache_stats.txt" ]; then
-        source "$CONFIG_DIR/cache_stats.txt"
-    fi
-    
-    cat << STATS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 CACHE STATISTICS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Status: $( [ "$CACHE_ENABLED" = "true" ] && echo "✅ Enabled" || echo "❌ Disabled" )
-   Entries: $total_entries
-   Size: ${total_size:-0} MB / ${CACHE_MAX_SIZE_MB} MB
-   TTL: ${CACHE_TTL_HOURS} hour(s)
-   Hits: $hits
-   Misses: $misses
-   Hit Rate: $( [ $((hits + misses)) -gt 0 ] && echo "$(( hits * 100 / (hits + misses) ))%" || echo "N/A" )
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STATS
-}
-
-update_cache_stats() {
-    local hit="$1"
-    local stats_file="$CONFIG_DIR/cache_stats.txt"
-    local hits=0
-    local misses=0
-    
-    if [ -f "$stats_file" ]; then
-        source "$stats_file"
-    fi
-    
-    if [ "$hit" = "true" ]; then
-        hits=$((hits + 1))
-    else
-        misses=$((misses + 1))
-    fi
-    
-    echo "hits=$hits" > "$stats_file"
-    echo "misses=$misses" >> "$stats_file"
 }
 
 # ============================================
@@ -358,7 +316,7 @@ select_best_model() {
 }
 
 # ============================================
-# INTERACTIVE SETUP WIZARD (IMPROVED)
+# SETUP WIZARD
 # ============================================
 
 run_setup_wizard() {
@@ -367,8 +325,7 @@ run_setup_wizard() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     
-    # Step 1: API Key
-    echo -e "${CYAN}📝 Step 1/5: API Key${NC}"
+    echo -e "${CYAN}📝 Step 1/4: API Key${NC}"
     echo -e "${YELLOW}   Get your key from: https://platform.deepseek.com/api_keys${NC}"
     read -s -p "   Enter your DeepSeek API key: " api_key
     echo ""
@@ -383,13 +340,12 @@ run_setup_wizard() {
         save_api_key "$api_key"
         echo -e "${GREEN}   ✅ Key validated and saved!${NC}"
     else
-        echo -e "${RED}   ❌ Invalid API key. Please check and try again.${NC}"
+        echo -e "${RED}   ❌ Invalid API key.${NC}"
         return 1
     fi
     echo ""
     
-    # Step 2: Default Model
-    echo -e "${CYAN}🎯 Step 2/5: Default Model${NC}"
+    echo -e "${CYAN}🎯 Step 2/4: Default Model${NC}"
     echo "   1) deepseek-v4-pro (best quality, slower)"
     echo "   2) deepseek-v4-flash (faster, good quality)"
     echo "   3) auto (let claude-seek choose)"
@@ -402,26 +358,21 @@ run_setup_wizard() {
     esac
     echo ""
     
-    # Step 3: Cache Settings
-    echo -e "${CYAN}💾 Step 3/5: Cache Settings${NC}"
-    read -p "   Enable response cache? (Y/n): " cache_choice
-    if [[ "$cache_choice" =~ ^[Nn]$ ]]; then
-        CACHE_ENABLED="false"
+    echo -e "${CYAN}📜 Step 3/4: History Settings${NC}"
+    read -p "   Enable session history? (Y/n): " history_choice
+    if [[ "$history_choice" =~ ^[Nn]$ ]]; then
+        HISTORY_ENABLED="false"
     else
-        CACHE_ENABLED="true"
+        HISTORY_ENABLED="true"
     fi
     
-    if [ "$CACHE_ENABLED" = "true" ]; then
-        read -p "   Cache TTL (hours) [1]: " ttl_input
-        CACHE_TTL_HOURS="${ttl_input:-1}"
-        
-        read -p "   Max cache size (MB) [100]: " size_input
-        CACHE_MAX_SIZE_MB="${size_input:-100}"
+    if [ "$HISTORY_ENABLED" = "true" ]; then
+        read -p "   Session timeout (hours) [24]: " timeout_input
+        SESSION_TIMEOUT_HOURS="${timeout_input:-24}"
     fi
     echo ""
     
-    # Step 4: Output Preferences
-    echo -e "${CYAN}🎨 Step 4/5: Output Preferences${NC}"
+    echo -e "${CYAN}🎨 Step 4/4: Output Preferences${NC}"
     read -p "   Show colored output? (Y/n): " color_choice
     if [[ "$color_choice" =~ ^[Nn]$ ]]; then
         NO_COLOR="true"
@@ -430,29 +381,21 @@ run_setup_wizard() {
     fi
     echo ""
     
-    # Step 5: Save Configuration
-    echo -e "${CYAN}💾 Step 5/5: Save Configuration${NC}"
-    
-    cat > "$CONFIG_FILE" << CONFIG_EOF
-# claude-seek configuration
-# Generated by setup wizard
-
-CACHE_ENABLED=$CACHE_ENABLED
-CACHE_TTL_HOURS=$CACHE_TTL_HOURS
-CACHE_MAX_SIZE_MB=$CACHE_MAX_SIZE_MB
+    cat > "$CONFIG_FILE" << CONFIGEOF
+HISTORY_ENABLED=$HISTORY_ENABLED
+SESSION_TIMEOUT_HOURS=$SESSION_TIMEOUT_HOURS
 DEFAULT_MODEL=$DEFAULT_MODEL
 NO_COLOR=$NO_COLOR
-CONFIG_EOF
+CONFIGEOF
     
-    echo -e "${GREEN}   ✅ Configuration saved to $CONFIG_FILE${NC}"
+    echo -e "${GREEN}   ✅ Configuration saved${NC}"
     echo ""
     
-    # Test connection
     echo -e "${BLUE}🔍 Testing connection...${NC}"
     if test_model_availability "deepseek-chat" "$api_key"; then
         echo -e "${GREEN}✅ Connection successful!${NC}"
     else
-        echo -e "${YELLOW}⚠️  Connection test failed, but configuration saved.${NC}"
+        echo -e "${YELLOW}⚠️  Connection test failed${NC}"
     fi
     
     echo ""
@@ -466,33 +409,26 @@ CONFIG_EOF
 # ============================================
 
 cmd_update() {
-    echo -e "${BLUE}🔄 Updating claude-seek...${NC}"
+    echo -e "${BLUE}🔄 Updating...${NC}"
     cd "$SCRIPT_DIR"
     npm update @anthropic-ai/claude-code 2>/dev/null || true
-    echo -e "${GREEN}✅ Update complete${NC}"
+    echo -e "${GREEN}✅ Updated${NC}"
     exit 0
 }
 
 cmd_config_set_key() {
-    echo -e "${BLUE}🔑 Configure API Key${NC}"
-    echo ""
-    
-    local key
+    echo -e "${BLUE}🔑 Set API Key${NC}"
     read -s -p "   Enter your DeepSeek API key: " key
     echo ""
-    
     if [ -z "$key" ]; then
         echo -e "${RED}❌ No key provided${NC}"
         exit 1
     fi
-    
-    echo -e "${BLUE}🔍 Validating key...${NC}"
-    
     if validate_api_key "$key"; then
         save_api_key "$key"
-        echo -e "${GREEN}✅ Key saved and validated!${NC}"
+        echo -e "${GREEN}✅ Key saved${NC}"
     else
-        echo -e "${RED}❌ Invalid API key${NC}"
+        echo -e "${RED}❌ Invalid key${NC}"
         exit 1
     fi
     exit 0
@@ -509,9 +445,8 @@ cmd_config_show() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${BLUE}⚙️  Current Configuration${NC}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo "   Cache: $( [ "$CACHE_ENABLED" = "true" ] && echo "Enabled" || echo "Disabled" )"
-    echo "   Cache TTL: ${CACHE_TTL_HOURS} hour(s)"
-    echo "   Max Cache Size: ${CACHE_MAX_SIZE_MB} MB"
+    echo "   History: $( [ "$HISTORY_ENABLED" = "true" ] && echo "Enabled" || echo "Disabled" )"
+    echo "   Session Timeout: ${SESSION_TIMEOUT_HOURS} hour(s)"
     echo "   Default Model: $DEFAULT_MODEL"
     echo "   Color Output: $( [ "$NO_COLOR" = "false" ] && echo "Enabled" || echo "Disabled" )"
     echo ""
@@ -522,50 +457,17 @@ cmd_config() {
         set-key) cmd_config_set_key ;;
         unset-key) cmd_config_unset_key ;;
         show) cmd_config_show ;;
-        *)
-            echo -e "${YELLOW}Usage: claude-seek config {set-key|unset-key|show}${NC}"
-            exit 1
-            ;;
+        *) echo "Usage: claude-seek config {set-key|unset-key|show}"; exit 1 ;;
     esac
 }
 
-cmd_cache_stats() {
-    get_cache_stats
-    exit 0
-}
-
-cmd_cache_clear() {
-    echo -e "${YELLOW}⚠️  This will delete all cached responses.${NC}"
-    read -p "Are you sure? (y/N): " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]]; then
-        clear_all_cache
-    else
-        echo -e "${GREEN}Cancelled${NC}"
-    fi
-    exit 0
-}
-
-cmd_cache_clean() {
-    echo -e "${BLUE}🧹 Cleaning old cache entries...${NC}"
-    clean_old_cache
-    echo -e "${GREEN}✅ Clean complete${NC}"
-    exit 0
-}
-
-cmd_cache() {
+cmd_history() {
     case "${1:-}" in
-        stats) cmd_cache_stats ;;
-        clear) cmd_cache_clear ;;
-        clean) cmd_cache_clean ;;
-        *)
-            echo -e "${YELLOW}Usage: claude-seek cache {stats|clear|clean}${NC}"
-            exit 1
-            ;;
+        list) list_sessions ;;
+        show) shift; show_session "$1" ;;
+        clear) clear_history ;;
+        *) echo "Usage: claude-seek history {list|show <id>|clear}"; exit 1 ;;
     esac
-}
-
-cmd_setup() {
-    run_setup_wizard
     exit 0
 }
 
@@ -604,9 +506,12 @@ cmd_doctor() {
         echo -e "${RED}✗ Missing${NC}"
     fi
     
-    echo -n "   Cache: "
-    if [ "$CACHE_ENABLED" = "true" ]; then
+    echo -n "   History: "
+    if [ "$HISTORY_ENABLED" = "true" ]; then
         echo -e "${GREEN}✓ Enabled${NC}"
+        local session_count
+        session_count=$(find "$HISTORY_DIR" -name "*.session" 2>/dev/null | wc -l)
+        echo -e "   Sessions: ${CYAN}$session_count${NC}"
     else
         echo -e "${YELLOW}○ Disabled${NC}"
     fi
@@ -630,92 +535,75 @@ cmd_doctor() {
 }
 
 cmd_help() {
-    cat << 'HELP'
-claude-seek v1.1.0 - Claude Code with DeepSeek Models
+    cat << 'HELPEOF'
+claude-seek v1.2.0 - Claude Code with DeepSeek Models
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-USAGE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+USAGE:
   claude-seek                    Start interactive session
   claude-seek -p "query"         Run query and exit
   claude-seek --model MODEL      Force specific model
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-COMMANDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+COMMANDS:
   setup                          Interactive setup wizard
   config set-key                 Configure API key
   config unset-key               Remove API key
   config show                    Show current settings
-  cache stats                    Show cache statistics
-  cache clear                    Clear all cached responses
-  cache clean                    Remove expired cache entries
+  history list                   List all sessions
+  history show <id>              Show session details
+  history clear                  Clear all history
   update                         Update to latest version
   doctor                         Health check
   --help, -h                     Show this help
   --version, -v                  Show version
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MODELS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+MODELS:
   deepseek-v4-pro    Best quality, slower
   deepseek-v4-flash  Faster, good quality
   deepseek-chat      Fallback, always works
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EXAMPLES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+EXAMPLES:
   claude-seek setup
   claude-seek -p "Write a Python function"
   claude-seek --model flash
-  claude-seek config show
-  claude-seek cache stats
-  claude-seek doctor
-
-HELP
+  claude-seek history list
+HELPEOF
     exit 0
 }
 
 cmd_version() {
-    echo "claude-seek v1.1.0"
+    echo "claude-seek v1.2.0"
     exit 0
 }
 
 # ============================================
-# MAIN COMMAND DISPATCH
+# MAIN DISPATCH
 # ============================================
 
 case "${1:-}" in
     update) cmd_update ;;
-    setup) cmd_setup ;;
+    setup) run_setup_wizard ;;
     config) shift; cmd_config "$@" ;;
-    cache) shift; cmd_cache "$@" ;;
+    history) shift; cmd_history "$@" ;;
     doctor) cmd_doctor ;;
     --help|-h) cmd_help ;;
     --version|-v) cmd_version ;;
 esac
 
 # ============================================
-# MAIN EXECUTION (with cache support)
+# MAIN EXECUTION
 # ============================================
 
-# Parse arguments
 CLAUDESEEK_MODEL=""
-QUERY=""
 ARGS=()
+SESSION_ID=""
+
 while [ $# -gt 0 ]; do
     case "$1" in
         --model) CLAUDESEEK_MODEL="$2"; shift 2 ;;
-        -p) QUERY="$2"; shift 2 ;;
         *) ARGS+=("$1"); shift ;;
     esac
 done
 
-# Get API key
 API_KEY=$(get_api_key)
 if [ -z "$API_KEY" ]; then
     echo -e "${RED}❌ Error: No API key found${NC}"
@@ -723,34 +611,36 @@ if [ -z "$API_KEY" ]; then
     exit 1
 fi
 
-# Validate API key
 if ! validate_api_key "$API_KEY"; then
     echo -e "${RED}❌ Error: Invalid API key${NC}"
-    echo -e "${YELLOW}   Run: claude-seek config set-key${NC}"
     exit 1
 fi
 
-# Select model
 SELECTED_MODEL=$(select_best_model "$API_KEY")
 
-# Set environment variables
+if [ "$HISTORY_ENABLED" = "true" ]; then
+    SESSION_ID=$(get_session_id)
+    save_session_start "$SESSION_ID" "$(pwd)" "$SELECTED_MODEL"
+fi
+
 export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
 export ANTHROPIC_AUTH_TOKEN="$API_KEY"
 export ANTHROPIC_MODEL="$SELECTED_MODEL"
 export ANTHROPIC_SMALL_FAST_MODEL="deepseek-chat"
 
-log "INFO" "Starting claude-seek with model: $SELECTED_MODEL"
-
-# Launch Claude Code
 echo -e "${CYAN}🚀 Starting claude-seek with model: $SELECTED_MODEL${NC}"
+if [ -n "$SESSION_ID" ]; then
+    echo -e "${CYAN}📝 Session: $SESSION_ID${NC}"
+fi
 echo ""
+
 exec "$SCRIPT_DIR/node_modules/.bin/claude" "${ARGS[@]}"
-EOF
+WRAPPEREOF
 
 chmod +x "$INSTALL_DIR/$WRAPPER_SCRIPT"
-echo -e "${GREEN}   ✅ Wrapper script created with cache support${NC}"
+echo -e "${GREEN}   ✅ Wrapper script created${NC}"
 
-# Update PATH if needed
+# Add to PATH
 detect_profile() {
     case "$(basename "$SHELL")" in
         zsh) echo "$HOME/.zshrc" ;;
@@ -776,24 +666,15 @@ fi
 
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}🎉 Installation complete! (v1.1.0)${NC}"
+echo -e "${GREEN}🎉 Installation complete! (v1.2.0)${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo -e "${BLUE}📋 Quick Start:${NC}"
+echo "   claude-seek setup"
+echo "   claude-seek"
 echo ""
-echo -e "   ${CYAN}1. Setup wizard:${NC}"
-echo -e "     ${YELLOW}claude-seek setup${NC}"
-echo ""
-echo -e "   ${CYAN}2. Or just set API key:${NC}"
-echo -e "     ${YELLOW}claude-seek config set-key${NC}"
-echo ""
-echo -e "   ${CYAN}3. Run claude-seek:${NC}"
-echo -e "     ${YELLOW}claude-seek${NC}"
-echo ""
-echo -e "${BLUE}📚 New in v1.1.0:${NC}"
-echo -e "   • Response caching (faster repeated queries)"
-echo -e "   • ${YELLOW}claude-seek cache stats${NC} - view cache usage"
-echo -e "   • ${YELLOW}claude-seek cache clear${NC} - clear cache"
-echo -e "   • ${YELLOW}claude-seek setup${NC} - interactive wizard"
-echo -e "   • ${YELLOW}claude-seek config show${NC} - view settings"
+echo -e "${BLUE}📚 New commands:${NC}"
+echo "   claude-seek history list"
+echo "   claude-seek history show <id>"
+echo "   claude-seek config show"
 echo ""

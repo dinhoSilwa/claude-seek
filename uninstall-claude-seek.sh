@@ -16,7 +16,7 @@ echo -e "${BLUE}🗑️  Uninstalling claude-seek${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
-read -p "Remove everything? (y/N): " confirm
+read -p "Remove everything (including cache and config)? (y/N): " confirm
 if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
     echo -e "${GREEN}Cancelled${NC}"
     exit 0

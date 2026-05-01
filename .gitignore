@@ -1,35 +1,184 @@
-# Dependencies
+# ============================================
+# API KEYS & SECRETS (NUNCA subir para o GitHub)
+# ============================================
+*.key
+*.pem
+*.crt
+*.p12
+*.enc
+.env
+.env.local
+.env.*.local
+.secrets
+secret
+*.secret
+
+# ============================================
+# DEPENDÊNCIAS
+# ============================================
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Cache and data
-~/.claude-seek/
+# ============================================
+# CACHE
+# ============================================
 .cache/
+cache/
 *.cache
+~/.claude-seek/cache/
 
-# Logs
+# ============================================
+# LOGS
+# ============================================
 *.log
 logs/
 *.log.*
+log-*.txt
 
-# Environment
-.env
-.env.local
-.key
-*.key
+# ============================================
+# ARQUIVOS DE CONFIGURAÇÃO LOCAL
+# ============================================
+config.env
+config.local.env
+.env.production
+.env.staging
+.env.development
 
-# OS files
+# ============================================
+# DIRETÓRIOS DE INSTALAÇÃO (não versionar)
+# ============================================
+/install/
+/dist/
+/build/
+/out/
+/temp/
+/tmp/
+
+# ============================================
+# SISTEMA OPERACIONAL
+# ============================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-desktop.ini
+Desktop.ini
+$RECYCLE.BIN/
 
-# IDE
+# ============================================
+# EDITORES E IDEs
+# ============================================
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-*
+*.code-workspace
 
-# Build artifacts
-dist/
-build/
+# ============================================
+# TESTES E COBERTURA
+# ============================================
+coverage/
+.nyc_output/
+*.test.log
+*.bats.xml
+test/temp/
+tests/temp/
+
+# ============================================
+# ARQUIVOS TEMPORÁRIOS
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+
+# ============================================
+# ARQUIVOS DE DADOS (com possíveis secrets)
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+
+# ============================================
+# ARQUIVOS DE PATCH
+# ============================================
+*.patch
+*.diff
+
+# ============================================
+# RELATÓRIOS E MÉTRICAS
+# ============================================
+*.report
+*.metrics
+*.stats
+
+# ============================================
+# ARQUIVOS DE EMPACOTAMENTO
+# ============================================
+*.tgz
 *.tar.gz
+*.zip
+*.rar
+*.7z
+
+# ============================================
+# FERRAMENTAS DE DEBUG
+# ============================================
+debug.log
+trace.log
+profile.log
+
+# ============================================
+# CLAUDE-SEEK SPECIFIC
+# ============================================
+# Chave API (em qualquer lugar)
+**/key
+**/key.enc
+
+# Configuração com chave
+**/config.env
+**/*config.env
+
+# Cache de respostas (pode conter dados sensíveis)
+**/.claude-seek/cache/
+**/cache/responses/
+
+# Logs com possíveis chaves
+**/.claude-seek/logs/
+
+# Arquivos temporários da instalação
+install-temp/
+temp-install/
+
+# ============================================
+# ARQUIVOS PESSOAIS DO USUÁRIO
+# ============================================
+*.local
+*.private
+*/.local/
+*.user
+*.user.*
+
+# ============================================
+# BACKUPS AUTOMÁTICOS
+# ============================================
+*~
+*.backup~
+*.swp
+*.swo
+*.swn

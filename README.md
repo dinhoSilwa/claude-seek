@@ -1,3 +1,9 @@
+<div align="center">
+  <img src="assets/cover.png" width="800"/>
+</div>
+
+---
+
 # claude-seek
 
 **Claude Code with DeepSeek models - Free AI coding assistant**

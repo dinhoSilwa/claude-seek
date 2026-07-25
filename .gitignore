@@ -30,7 +30,7 @@ pnpm-lock.yaml
 .cache/
 cache/
 *.cache
-~/.claude-seek/cache/
+~/.orion/cache/
 
 # ============================================
 # LOGS
@@ -144,7 +144,7 @@ trace.log
 profile.log
 
 # ============================================
-# CLAUDE-SEEK SPECIFIC
+# ORION SPECIFIC
 # ============================================
 # Chave API (em qualquer lugar)
 **/key
@@ -155,11 +155,11 @@ profile.log
 **/*config.env
 
 # Cache de respostas (pode conter dados sensíveis)
-**/.claude-seek/cache/
+**/.orion/cache/
 **/cache/responses/
 
 # Logs com possíveis chaves
-**/.claude-seek/logs/
+**/.orion/logs/
 
 # Arquivos temporários da instalação
 install-temp/

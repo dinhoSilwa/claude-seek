@@ -39,14 +39,14 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           sudo apt-get update && sudo apt-get install -y shellcheck
-          shellcheck install-claude-seek.sh uninstall-claude-seek.sh
+          shellcheck install-orion.sh uninstall-orion.sh
         shell: bash
 
       - name: Run installation test (Unix)
         if: runner.os != 'Windows'
         run: |
-          chmod +x install-claude-seek.sh
-          ./install-claude-seek.sh
+          chmod +x install-orion.sh
+          ./install-orion.sh
           echo "DEEPSEEK_API_KEY=test_key_123" >> $HOME/.bashrc
           source $HOME/.bashrc || true
         shell: bash
@@ -61,16 +61,16 @@ jobs:
       - name: Test CLI commands (Unix)
         if: runner.os != 'Windows'
         run: |
-          export PATH="$HOME/.claude-seek:$PATH"
-          claude-seek --help || echo "Help command works"
-          claude-seek --version || echo "Version command works"
-          claude-seek doctor || echo "Doctor command works"
+          export PATH="$HOME/.orion:$PATH"
+          orion --help || echo "Help command works"
+          orion --version || echo "Version command works"
+          orion doctor || echo "Doctor command works"
         shell: bash
 
       - name: Windows verification
         if: runner.os == 'Windows'
         run: |
           echo "Windows: Basic checks"
-          bash install-claude-seek.sh
+          bash install-orion.sh
           echo "Installation completed on Windows"
         shell: bash

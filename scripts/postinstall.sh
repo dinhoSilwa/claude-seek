@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # This runs after npm install -g
-# It ensures the claude-seek command is available
+# It ensures the orion command is available
 
 echo ""
-echo "✨ claude-seek installed successfully!"
+echo "✨ orion installed successfully!"
 echo ""
 echo "Quick start:"
-echo "  claude-seek setup"
-echo "  claude-seek"
+echo "  orion setup"
+echo "  orion"
 echo ""

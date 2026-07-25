@@ -1,4 +1,4 @@
-# ShellCheck configuration for claude-seek
+# ShellCheck configuration for orion
 
 # Enable all checks
 enable=all

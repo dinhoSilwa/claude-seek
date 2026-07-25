@@ -1,0 +1,38 @@
+.spec/03-specs/epics/EPIC-009.md
+  s_6a553aa6bb7c31::t_7686e681ce5ec8 1-15
+.spec/00-context/project-overview.md
+  s_6a553aa6bb7c31::t_552306bd77503b 4,7,12-25
+.spec/03-specs/epics/EPIC-005.md
+  s_6a553aa6bb7c31::t_4be3f1c3c02c42 1-20
+.spec/03-specs/epics/EPIC-010.md
+  s_6a553aa6bb7c31::t_e8fec450383f67 1-32
+.spec/00-context/decision-log.md
+  s_6a553aa6bb7c31::t_8a247e65217b5b 67-113
+.spec/00-context/tech-stack.md
+  s_6a553aa6bb7c31::t_a7bebdc2fc44f7 4-5,8-10,12-29,32-41,43-45,48-50,54-68
+.spec/03-specs/epics/EPIC-007.md
+  s_6a553aa6bb7c31::t_cc67a8c93e4fd4 1-28
+.spec/03-specs/epics/EPIC-008.md
+  s_6a553aa6bb7c31::t_cb79941d7e4e8f 1-15
+.spec/03-specs/BACKLOG.md
+  s_6a553aa6bb7c31::t_a082b89e5a040e 1
+  s_6a553aa6bb7c31::t_86a3a32269f42c 71-150
+.spec/03-specs/epics/EPIC-006.md
+  s_6a553aa6bb7c31::t_376f731529a511 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f7e9e5323f28ecc0a6e21773f413a271133d6f88",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

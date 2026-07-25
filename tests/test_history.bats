@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-HISTORY_DIR="$HOME/.claude-seek/history"
+HISTORY_DIR="$HOME/.orion/history"
 
 setup() {
     mkdir -p "$HISTORY_DIR"
@@ -13,13 +13,13 @@ teardown() {
 # ── history list ──────────────────────────────────────────────────────────────
 
 @test "history list exits 0 with no sessions" {
-    run claude-seek history list
+    run orion history list
     [ "$status" -eq 0 ]
 }
 
 @test "history list shows empty message when no sessions exist" {
     rm -f "$HISTORY_DIR"/*.session 2>/dev/null || true
-    run claude-seek history list
+    run orion history list
     [ "$status" -eq 0 ]
     [[ "$output" == *"No sessions found"* ]]
 }
@@ -31,7 +31,7 @@ START_DATE=Wed Jan 1 12:00:00 UTC 2025
 PROJECT_DIR=/test/project
 MODEL=deepseek-v4-pro
 EOF
-    run claude-seek history list
+    run orion history list
     [ "$status" -eq 0 ]
     [[ "$output" == *"test_bats_20250101"* ]]
 }
@@ -39,7 +39,7 @@ EOF
 # ── history show ──────────────────────────────────────────────────────────────
 
 @test "history show exits non-zero for nonexistent session" {
-    run claude-seek history show nonexistent_bats_session_xyz
+    run orion history show nonexistent_bats_session_xyz
     [ "$status" -ne 0 ]
 }
 
@@ -50,7 +50,7 @@ START_DATE=Wed Jan 1 12:00:00 UTC 2025
 PROJECT_DIR=/test/project
 MODEL=deepseek-v4-pro
 EOF
-    run claude-seek history show test_bats_show
+    run orion history show test_bats_show
     [ "$status" -eq 0 ]
     [[ "$output" == *"test_bats_show"* ]]
 }
@@ -58,21 +58,21 @@ EOF
 # ── history clear ─────────────────────────────────────────────────────────────
 
 @test "history clear exits 0" {
-    run claude-seek history clear
+    run orion history clear
     [ "$status" -eq 0 ]
 }
 
 @test "history clear removes session files" {
     echo "dummy" > "$HISTORY_DIR/test_bats_clear.session"
-    run claude-seek history clear
+    run orion history clear
     [ "$status" -eq 0 ]
     [ ! -f "$HISTORY_DIR/test_bats_clear.session" ]
 }
 
 @test "history list shows empty after clear" {
     echo "dummy" > "$HISTORY_DIR/test_bats_afterclear.session"
-    claude-seek history clear
-    run claude-seek history list
+    orion history clear
+    run orion history list
     [ "$status" -eq 0 ]
     [[ "$output" == *"No sessions found"* ]]
 }
@@ -80,6 +80,6 @@ EOF
 # ── history unknown subcommand ────────────────────────────────────────────────
 
 @test "history unknown subcommand exits non-zero" {
-    run claude-seek history badcmd
+    run orion history badcmd
     [ "$status" -ne 0 ]
 }

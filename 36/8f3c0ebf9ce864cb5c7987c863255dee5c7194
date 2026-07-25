@@ -1,0 +1,21 @@
+src/cli/index.ts
+  s_6a553aa6bb7c31::t_43c4a8813a0c69 52-65,69-70,72-76,78-79,81-85,88-90
+  s_6a553aa6bb7c31::t_d02f875f77878d 98,100-108,110-116
+  s_6a553aa6bb7c31::t_e3276c6a5393c6 3,15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "368f3c0ebf9ce864cb5c7987c863255dee5c7194",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

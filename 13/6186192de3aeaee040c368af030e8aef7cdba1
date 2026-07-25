@@ -1,0 +1,27 @@
+.shellcheckrc.sh
+  s_6a553aa6bb7c31::t_11fe7106e95117 1
+scripts/postinstall.sh
+  s_6a553aa6bb7c31::t_11fe7106e95117 4,7,10-11
+.gitignore
+  s_6a553aa6bb7c31::t_328737e35b6b97 33,147,158,162
+LICENSE
+  s_6a553aa6bb7c31::t_328737e35b6b97 3
+.github/workflows/test.yml
+  s_6a553aa6bb7c31::t_11fe7106e95117 42,48-49,64-67,74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "136186192de3aeaee040c368af030e8aef7cdba1",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

@@ -26,7 +26,7 @@
     }
   },
   "bin": {
-    "orion": "./bin/orion"
+    "orion": "./dist/main.js"
   },
   "scripts": {
     "build": "tsc",

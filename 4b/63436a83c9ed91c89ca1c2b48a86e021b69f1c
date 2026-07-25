@@ -1,0 +1,123 @@
+.spec/03-specs/epics/EPIC-003.md
+  s_6a553aa6bb7c31::t_7abd64a90ade1d 1-14
+.spec/04-architecture/frontend.md
+  s_6a553aa6bb7c31::t_103bd9322b9c15 1-19
+.spec/02-domain/events.md
+  s_6a553aa6bb7c31::t_f2fc8a685671a6 1-15
+.spec/03-specs/epics/README.md
+  s_6a553aa6bb7c31::t_c02d29637d6e67 1-15
+.spec/03-specs/phases/README.md
+  s_6a553aa6bb7c31::t_2012925b2b6227 1-16
+.spec/03-specs/tasks/TASK-009.md
+  s_6a553aa6bb7c31::t_1e1f860222febe 1-42
+.spec/03-specs/tasks/TASK-003.md
+  s_6a553aa6bb7c31::t_b98b4179ef57bc 1-35
+.spec/03-specs/phases/PHASE-003.md
+  s_6a553aa6bb7c31::t_5fea5d208e6995 1-10
+CLAUDE.md
+  s_6a553aa6bb7c31::t_92c09a979f7ded 1-167
+.spec/03-specs/tasks/TASK-004.md
+  s_6a553aa6bb7c31::t_ffac2ca402a01b 1-48
+.spec/03-specs/tasks/TASK-008.md
+  s_6a553aa6bb7c31::t_2cac4a0a6ca62c 1-38
+.spec/03-specs/phases/PHASE-007.md
+  s_6a553aa6bb7c31::t_047665d945672e 1-10
+.spec/03-specs/epics/EPIC-001.md
+  s_6a553aa6bb7c31::t_f951eb624ea658 1-21
+.spec/01-product/prd.md
+  s_6a553aa6bb7c31::t_e0a3031a8706ea 2-3,5-6,11-12,17-18,20,23,36-37,45-46
+  s_6a553aa6bb7c31::t_e7ae39aeecc581 1,4,7-10,13-16,19,21-22,24-35,38-44,47-49
+.spec/99-templates/task.md
+  s_6a553aa6bb7c31::t_7ab1a01cead874 1-27
+.spec/03-specs/phases/PHASE-001.md
+  s_6a553aa6bb7c31::t_356c767be84569 1-10
+.spec/00-context/project-overview.md
+  s_6a553aa6bb7c31::t_7d500aa4677148 4,7,9-10,12-25,28-30,33-36
+  s_6a553aa6bb7c31::t_ab3cccd2a7ffa1 1-3,5-6,8,11,26-27,31-32
+.spec/03-specs/epics/EPIC-002.md
+  s_6a553aa6bb7c31::t_f012fd9c3d6de3 1-18
+.spec/00-context/decision-log.md
+  s_6a553aa6bb7c31::t_91fed0781001ce 3-56,58,60-64,66-73,75-77
+  s_6a553aa6bb7c31::t_7ca1e911cab6e4 1-2,57,59,65,74
+.spec/03-specs/tasks/TASK-006.md
+  s_6a553aa6bb7c31::t_6023c3915eeead 1-38
+.spec/03-specs/tasks/TASK-012.md
+  s_6a553aa6bb7c31::t_9e90ec6deb006e 1-37
+.spec/03-specs/phases/PHASE-002.md
+  s_6a553aa6bb7c31::t_de3c3b92cf5b73 1-10
+.spec/06-observability/strategy.md
+  s_6a553aa6bb7c31::t_3a650f8300d67f 1-16
+.spec/03-specs/tasks/TASK-007.md
+  s_6a553aa6bb7c31::t_79eeceffa45a03 1-31
+.spec/03-specs/BACKLOG.md
+  s_6a553aa6bb7c31::t_1833e2cfb8a372 18-21
+  s_6a553aa6bb7c31::t_c8066ab7465a16 1-17,22-81
+.spec/03-specs/phases/PHASE-006.md
+  s_6a553aa6bb7c31::t_4715e99a883b2b 1-10
+.spec/99-templates/adr.md
+  s_6a553aa6bb7c31::t_5dd2d37b6aea16 1-16
+.spec/03-specs/tasks/TASK-002.md
+  s_6a553aa6bb7c31::t_74b1853a60fb1a 1-41
+.spec/00-context/commit-convention.md
+  s_6a553aa6bb7c31::t_e67d97060e6e6f 1-58
+.spec/03-specs/epics/EPIC-004.md
+  s_6a553aa6bb7c31::t_402f146defefe9 1-12
+.spec/01-product/requirements.md
+  s_6a553aa6bb7c31::t_5833eaa19c159f 1-6,18-20
+  s_6a553aa6bb7c31::t_88cc64449cea3c 7-17,21-29
+.spec/04-architecture/backend.md
+  s_6a553aa6bb7c31::t_6ca4ba74e5a300 1,3,5,7-33,35,37-44,46-67
+  s_6a553aa6bb7c31::t_554f0353ebad90 2,4,6,34,36,45
+.spec/05-quality/test-strategy.md
+  s_6a553aa6bb7c31::t_75b19a91f14144 3-6,8,10-19,21,23,25-32,34-44
+  s_6a553aa6bb7c31::t_d71cb58c091260 1-2,7,9,20,22,24,33
+.spec/07-infra/deploy.md
+  s_6a553aa6bb7c31::t_e75d697dcc37f3 1-23
+.spec/03-specs/tasks/TASK-005.md
+  s_6a553aa6bb7c31::t_f61f1f8bcc741b 1-33
+.spec/03-specs/phases/PHASE-004.md
+  s_6a553aa6bb7c31::t_f1387bc3c18a90 1-10
+.spec/00-context/tech-stack.md
+  s_6a553aa6bb7c31::t_57a92871b6ae4d 1-3,6-7,10,15,17,22,49,52-53
+  s_6a553aa6bb7c31::t_d4ab441e31b61c 4-5,8-9,11-14,16,18-21,23-33,37-48,50-51,54-56
+  s_6a553aa6bb7c31::t_fa399f29382b05 34-36
+.spec/01-product/user-stories.md
+  s_6a553aa6bb7c31::t_dbacd0a1a02da6 3-25,27-30,32-34,38-67
+  s_6a553aa6bb7c31::t_0e3aa2013b3e7c 1-2,26,31,35-37
+.spec/02-domain/entities.md
+  s_6a553aa6bb7c31::t_d1cb4fe1179c96 1-15
+.spec/02-domain/aggregates.md
+  s_6a553aa6bb7c31::t_b6f156a397b96c 1-16
+.spec/02-domain/bounded-contexts.md
+  s_6a553aa6bb7c31::t_52592e890dc518 1-15
+.spec/03-specs/tasks/README.md
+  s_6a553aa6bb7c31::t_6790ad264cf11b 1-36
+.spec/04-architecture/api-contracts.md
+  s_6a553aa6bb7c31::t_05954e7f47f6a4 1-33
+.spec/99-templates/epic.md
+  s_6a553aa6bb7c31::t_10db7d64ef8a8a 1-15
+.spec/03-specs/tasks/TASK-001.md
+  s_6a553aa6bb7c31::t_51cdca27999cd7 1-33
+.spec/03-specs/tasks/TASK-010.md
+  s_6a553aa6bb7c31::t_b82d0bb20bc5e2 1-37
+.spec/03-specs/tasks/TASK-011.md
+  s_6a553aa6bb7c31::t_ff624aed486fe6 1-29
+.spec/03-specs/phases/PHASE-005.md
+  s_6a553aa6bb7c31::t_54487fd698511a 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4b63436a83c9ed91c89ca1c2b48a86e021b69f1c",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

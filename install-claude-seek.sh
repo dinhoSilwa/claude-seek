@@ -2,6 +2,8 @@
 
 set -e
 
+VERSION="1.3.0"
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -14,7 +16,7 @@ INSTALL_DIR="$HOME/.claude-seek"
 WRAPPER_SCRIPT="claude-seek"
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🚀 Installing claude-seek v1.3.0${NC}"
+echo -e "${BLUE}🚀 Installing claude-seek v${VERSION}${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -42,10 +44,10 @@ echo -e "${GREEN}   ✅ $INSTALL_DIR${NC}"
 # Initialize npm project
 if [ ! -f "package.json" ]; then
     echo -e "${BLUE}📦 Initializing npm project...${NC}"
-    cat > package.json << 'PKGEOF'
+    cat > package.json << PKGEOF
 {
   "name": "claude-seek",
-  "version": "1.3.0",
+  "version": "${VERSION}",
   "description": "Claude Code with DeepSeek models",
   "private": true
 }
@@ -64,7 +66,7 @@ echo -e "${BLUE}📝 Creating wrapper script...${NC}"
 cat > "$INSTALL_DIR/$WRAPPER_SCRIPT" << 'WRAPPEREOF'
 #!/bin/bash
 
-# claude-seek v1.3.0 - Claude Code with DeepSeek
+# claude-seek v__VERSION__ - Claude Code with DeepSeek
 
 set -e
 
@@ -102,16 +104,26 @@ mkdir -p "$CONFIG_DIR" "$HISTORY_DIR" "$LOG_DIR"
 
 CONFIG_FILE="$CONFIG_DIR/config.env"
 
-# Default values (safety first)
-HISTORY_ENABLED="${HISTORY_ENABLED:-true}"
-DEFAULT_MODEL="${DEFAULT_MODEL:-auto}"
-SESSION_TIMEOUT_HOURS="${SESSION_TIMEOUT_HOURS:-24}"
-NO_COLOR="${NO_COLOR:-false}"
-LOG_LEVEL="${LOG_LEVEL:-info}"
+# Default values
+HISTORY_ENABLED="true"
+DEFAULT_MODEL="auto"
+SESSION_TIMEOUT_HOURS="24"
+NO_COLOR="false"
+LOG_LEVEL="info"
 
-# Load user config if exists
+# Load user config if exists (safe parsing — no code execution)
 if [ -f "$CONFIG_FILE" ]; then
-    source "$CONFIG_FILE"
+    _val=$(grep '^HISTORY_ENABLED=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+    [ -n "$_val" ] && HISTORY_ENABLED="$_val"
+    _val=$(grep '^DEFAULT_MODEL=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+    [ -n "$_val" ] && DEFAULT_MODEL="$_val"
+    _val=$(grep '^SESSION_TIMEOUT_HOURS=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+    [ -n "$_val" ] && SESSION_TIMEOUT_HOURS="$_val"
+    _val=$(grep '^NO_COLOR=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+    [ -n "$_val" ] && NO_COLOR="$_val"
+    _val=$(grep '^LOG_LEVEL=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]')
+    [ -n "$_val" ] && LOG_LEVEL="$_val"
+    unset _val
 fi
 
 # ============================================
@@ -170,7 +182,7 @@ call_deepseek_api() {
 validate_api_key() {
     local key="$1"
     local response
-    response=$(call_deepseek_api "$key" "deepseek-chat")
+    response=$(call_deepseek_api "$key" "deepseek-v4-flash")
     echo "$response" | grep -q '"id"'
 }
 
@@ -202,14 +214,14 @@ select_model() {
         fi
     fi
     
-    for model in "deepseek-v4-pro" "deepseek-v4-flash" "deepseek-chat"; do
+    for model in "deepseek-v4-pro" "deepseek-v4-flash"; do
         if test_model "$model" "$key"; then
             echo "$model"
             return 0
         fi
     done
-    
-    echo "deepseek-chat"
+
+    echo "deepseek-v4-flash"
 }
 
 # ============================================
@@ -429,7 +441,7 @@ cmd_doctor() {
     
     if [ -n "$key" ] && validate_api_key "$key"; then
         echo "Models:"
-        for m in "deepseek-v4-pro" "deepseek-v4-flash" "deepseek-chat"; do
+        for m in "deepseek-v4-pro" "deepseek-v4-flash"; do
             if test_model "$m" "$key"; then
                 echo "   $m: Available"
             else
@@ -444,7 +456,7 @@ cmd_doctor() {
 
 cmd_help() {
     cat << 'EOF'
-claude-seek v1.3.0 - Claude Code with DeepSeek
+claude-seek v__VERSION__ - Claude Code with DeepSeek
 
 USAGE:
   claude-seek                    Start interactive session
@@ -499,7 +511,7 @@ case "${1:-}" in
         ;;
     doctor) cmd_doctor ;;
     --help|-h) cmd_help ;;
-    --version|-v) echo "claude-seek v1.3.0"; exit 0 ;;
+    --version|-v) echo "claude-seek v__VERSION__"; exit 0 ;;
 esac
 
 # ============================================
@@ -545,6 +557,7 @@ echo ""
 exec "$SCRIPT_DIR/node_modules/.bin/claude" "${ARGS[@]}"
 WRAPPEREOF
 
+sed -i "s/__VERSION__/${VERSION}/g" "$INSTALL_DIR/$WRAPPER_SCRIPT"
 chmod +x "$INSTALL_DIR/$WRAPPER_SCRIPT"
 echo -e "${GREEN}   ✅ Wrapper script created${NC}"
 
@@ -574,7 +587,7 @@ fi
 
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}🎉 Installation complete! (v1.3.0)${NC}"
+echo -e "${GREEN}🎉 Installation complete! (v${VERSION})${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo -e "${BLUE}Quick Start:${NC}"

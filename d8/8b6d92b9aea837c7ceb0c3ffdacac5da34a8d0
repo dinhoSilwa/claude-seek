@@ -1,0 +1,19 @@
+README.md
+  s_6a553aa6bb7c31::t_baab0e37e27e83 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d88b6d92b9aea837c7ceb0c3ffdacac5da34a8d0",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "unknown"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

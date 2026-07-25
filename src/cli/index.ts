@@ -12,12 +12,13 @@ import {
   writeConfig,
   redactKey,
 } from '../config/index.js';
+import { ModelRegistry } from '../models/index.js';
+import { buildAllConfiguredProviders, SUPPORTED_PROVIDERS } from './provider-factory.js';
+import type { ModelCapability } from '../types/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 const pkg = require(path.join(__dirname, '../../package.json')) as { version: string };
-
-const SUPPORTED_PROVIDERS = ['deepseek', 'openai', 'anthropic', 'openrouter', 'kimi', 'glm'];
 
 function promptSecret(question: string): Promise<string> {
   return new Promise((resolve) => {
@@ -212,9 +213,46 @@ export function createCLI(): Command {
     .command('models')
     .description('list available models')
     .option('--provider <id>', 'filter by provider')
-    .option('--capability <cap>', 'filter by capability')
-    .action((_options: { provider?: string; capability?: string }) => {
-      console.log('Model registry coming in EPIC-008.');
+    .option('--capability <cap>', 'filter by capability (chat, code, vision, embeddings, function_calling, streaming)')
+    .action(async (options: { provider?: string; capability?: string }) => {
+      const providers = buildAllConfiguredProviders();
+      if (providers.length === 0) {
+        console.log('No providers configured. Run: orion providers add <provider>');
+        return;
+      }
+
+      const filtered = options.provider
+        ? providers.filter((p) => p.id === options.provider)
+        : providers;
+
+      if (filtered.length === 0) {
+        console.error(`No configured provider matches: ${options.provider}`);
+        process.exit(1);
+      }
+
+      const registry = new ModelRegistry();
+      await registry.loadAll(filtered);
+
+      let models = options.capability
+        ? registry.byCapability(options.capability as ModelCapability)
+        : registry.all();
+
+      if (models.length === 0) {
+        console.log('No models found matching the given filters.');
+        return;
+      }
+
+      console.log(`\nAvailable models (${models.length}):\n`);
+      for (const m of models) {
+        const caps = m.capabilities.join(', ');
+        const ctx = `${Math.round(m.contextWindow / 1000)}k`;
+        const price = m.pricing
+          ? `  $${m.pricing.inputPer1M}/$${m.pricing.outputPer1M} per 1M tokens`
+          : '';
+        const def = m.isDefault ? ' (default)' : '';
+        console.log(`  ${m.provider.padEnd(12)} ${m.id.padEnd(32)} ctx:${ctx.padEnd(6)}${price}${def}`);
+        console.log(`  ${''.padEnd(12)} capabilities: ${caps}\n`);
+      }
     });
 
   // --- doctor ---

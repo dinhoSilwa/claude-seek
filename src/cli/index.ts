@@ -13,7 +13,8 @@ import {
   redactKey,
 } from '../config/index.js';
 import { ModelRegistry } from '../models/index.js';
-import { buildAllConfiguredProviders, buildProvider, SUPPORTED_PROVIDERS } from './provider-factory.js';
+import { buildAllConfiguredProviders, buildProvider, getDefaultModel, SUPPORTED_PROVIDERS } from './provider-factory.js';
+import { Router, appendRoutingLog } from '../routing/index.js';
 import type { ModelCapability } from '../types/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -252,6 +253,86 @@ export function createCLI(): Command {
         const def = m.isDefault ? ' (default)' : '';
         console.log(`  ${m.provider.padEnd(12)} ${m.id.padEnd(32)} ctx:${ctx.padEnd(6)}${price}${def}`);
         console.log(`  ${''.padEnd(12)} capabilities: ${caps}\n`);
+      }
+    });
+
+  // --- chat ---
+  program
+    .command('chat')
+    .description('send a message to an AI provider')
+    .argument('[prompt]', 'the message to send (reads from stdin if omitted)')
+    .option('-p, --provider <id>', 'provider to use (overrides default)')
+    .option('-m, --model <id>', 'model to use (overrides provider default)')
+    .option('--no-log', 'do not log this request to routing history')
+    .action(async (prompt: string | undefined, options: { provider?: string; model?: string; log: boolean }) => {
+      const config = readConfig();
+      const allProviders = buildAllConfiguredProviders();
+
+      if (allProviders.length === 0) {
+        console.error('No providers configured. Run: orion setup');
+        process.exit(1);
+      }
+
+      // resolve prompt
+      let message = prompt;
+      if (!message) {
+        if (process.stdin.isTTY) {
+          const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+          message = await new Promise<string>((resolve) => rl.question('You: ', (ans) => { rl.close(); resolve(ans); }));
+        } else {
+          const chunks: Buffer[] = [];
+          for await (const chunk of process.stdin) chunks.push(chunk as Buffer);
+          message = Buffer.concat(chunks).toString().trim();
+        }
+      }
+
+      if (!message?.trim()) {
+        console.error('No prompt provided.');
+        process.exit(1);
+      }
+
+      // resolve providers
+      let providers = allProviders;
+      if (options.provider) {
+        const p = buildProvider(options.provider);
+        if (!p) {
+          console.error(`Provider '${options.provider}' is not configured. Run: orion providers add ${options.provider}`);
+          process.exit(1);
+        }
+        providers = [p];
+      } else if (config.defaultProvider) {
+        const def = buildProvider(config.defaultProvider);
+        if (def) {
+          const rest = allProviders.filter((p) => p.id !== config.defaultProvider);
+          providers = [def, ...rest];
+        }
+      }
+
+      // resolve model
+      const providerId = options.provider ?? config.defaultProvider ?? providers[0].id;
+      const providerCred = config.providers[providerId];
+      const model = options.model ?? providerCred?.defaultModel ?? getDefaultModel(providerId);
+
+      const router = new Router(providers, config);
+
+      try {
+        const result = await router.route({
+          messages: [{ role: 'user', content: message }],
+          model,
+        });
+
+        console.log(result.response.content);
+
+        if (result.fallbackUsed) {
+          console.error(`\n[fallback: used ${result.providerId}/${result.modelId} after ${result.attemptsCount} attempts]`);
+        }
+
+        if (options.log !== false) {
+          try { appendRoutingLog(result); } catch { /* non-fatal */ }
+        }
+      } catch (err) {
+        console.error(`Error: ${(err as Error).message}`);
+        process.exit(1);
       }
     });
 

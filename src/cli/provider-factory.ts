@@ -33,3 +33,16 @@ export function buildAllConfiguredProviders(): Provider[] {
 }
 
 export const SUPPORTED_PROVIDERS = Object.keys(PROVIDER_MAP);
+
+const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
+  deepseek: 'deepseek-v4-pro',
+  openai: 'gpt-4o',
+  anthropic: 'claude-sonnet-4-6',
+  openrouter: 'openai/gpt-4o',
+  kimi: 'moonshot-v1-128k',
+  glm: 'glm-4-plus',
+};
+
+export function getDefaultModel(providerId: string): string {
+  return PROVIDER_DEFAULT_MODELS[providerId] ?? 'default';
+}

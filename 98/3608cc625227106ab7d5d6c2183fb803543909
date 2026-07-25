@@ -1,0 +1,28 @@
+bin/orion
+  s_6a553aa6bb7c31::t_55e52959a9c73d 2
+src/cli/provider-factory.ts
+  s_6a553aa6bb7c31::t_3b780d107cc037 36-48
+src/cli/index.ts
+  s_6a553aa6bb7c31::t_d51e3b3886fb37 17
+  s_6a553aa6bb7c31::t_2e0db7b78972c9 259-338
+  s_6a553aa6bb7c31::t_da9839faa95a06 16
+package.json
+  s_6a553aa6bb7c31::t_79da630f976d11 3
+  s_6a553aa6bb7c31::t_34b8f4c3b7a520 36-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "983608cc625227106ab7d5d6c2183fb803543909",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

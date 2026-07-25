@@ -109,6 +109,7 @@ export function createCLI(): Command {
     .version(pkg.version, '-v, --version', 'output the current version')
     .option('-p, --provider <id>', 'provider to use (overrides default)')
     .allowUnknownOption(true)
+    .allowExcessArguments(true)
     .action(async (_options: { provider?: string }) => {
       const config = readConfig();
       const providerId = _options.provider ?? config.defaultProvider;

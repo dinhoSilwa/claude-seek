@@ -37,7 +37,8 @@ function fetchUpstream(
   extraHeaders?: Record<string, string>,
 ): Promise<http.IncomingMessage> {
   return new Promise((resolve, reject) => {
-    const target = new URL(path, baseUrl);
+    const base = baseUrl.replace(/\/$/, '');
+    const target = new URL(base + path);
     const isHttps = target.protocol === 'https:';
     const lib = isHttps ? https : http;
 
@@ -61,6 +62,12 @@ function fetchUpstream(
     req.end();
   });
 }
+
+const DEBUG = process.env['ORION_DEBUG'] === '1';
+function dbg(...args: unknown[]): void { if (DEBUG) console.error('[orion-proxy]', ...args); }
+
+// Claude Code validates the model name — must look like a Claude model
+const PROXY_MODEL = 'claude-3-5-sonnet-20241022';
 
 export function createProxyServer(providerId: string, cred: ProviderCredential): http.Server {
   const baseUrl = cred.baseUrl ?? PROVIDER_BASE_URLS[providerId] ?? '';
@@ -103,9 +110,11 @@ export function createProxyServer(providerId: string, cred: ProviderCredential):
         return;
       }
 
+      // keep original model for upstream; report PROXY_MODEL back to Claude Code
       const openAIReq = anthropicToOpenAI(anthropicReq);
       const upstreamBody = JSON.stringify(openAIReq);
       const requestId = Date.now().toString(36);
+      dbg(`→ ${providerId} model=${anthropicReq.model} stream=${anthropicReq.stream}`);
 
       try {
         const upstream = await fetchUpstream(
@@ -117,22 +126,25 @@ export function createProxyServer(providerId: string, cred: ProviderCredential):
           extraHeaders,
         );
 
+        dbg(`← upstream status ${upstream.statusCode}`);
         if (anthropicReq.stream) {
           res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
             Connection: 'keep-alive',
           });
-          await pipeOpenAIStreamToAnthropic(upstream, res, anthropicReq.model, requestId);
+          await pipeOpenAIStreamToAnthropic(upstream, res, PROXY_MODEL, requestId);
+          dbg('stream done');
         } else {
           const responseBody = await readBody(upstream as unknown as http.IncomingMessage);
+          dbg('response body:', responseBody.slice(0, 200));
           if (!upstream.statusCode || upstream.statusCode >= 400) {
             res.writeHead(upstream.statusCode ?? 500, { 'Content-Type': 'application/json' });
             res.end(responseBody);
             return;
           }
           const openAIRes = JSON.parse(responseBody);
-          const anthropicRes = openAIToAnthropic(openAIRes, anthropicReq.model);
+          const anthropicRes = openAIToAnthropic(openAIRes, PROXY_MODEL);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(anthropicRes));
         }

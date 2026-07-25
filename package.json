@@ -33,6 +33,7 @@
     "build:watch": "tsc --watch",
     "lint": "eslint src/",
     "test": "bats tests/",
+    "test:proxy": "node scripts/test-proxy-local.mjs",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run build"
   },

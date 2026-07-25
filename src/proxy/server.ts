@@ -66,8 +66,6 @@ function fetchUpstream(
 const DEBUG = process.env['ORION_DEBUG'] === '1';
 function dbg(...args: unknown[]): void { if (DEBUG) console.error('[orion-proxy]', ...args); }
 
-// Claude Code validates the model name — must look like a Claude model
-const PROXY_MODEL = 'claude-3-5-sonnet-20241022';
 
 export function createProxyServer(providerId: string, cred: ProviderCredential): http.Server {
   const baseUrl = cred.baseUrl ?? PROVIDER_BASE_URLS[providerId] ?? '';
@@ -133,7 +131,7 @@ export function createProxyServer(providerId: string, cred: ProviderCredential):
             'Cache-Control': 'no-cache',
             Connection: 'keep-alive',
           });
-          await pipeOpenAIStreamToAnthropic(upstream, res, PROXY_MODEL, requestId);
+          await pipeOpenAIStreamToAnthropic(upstream, res, anthropicReq.model, requestId);
           dbg('stream done');
         } else {
           const responseBody = await readBody(upstream as unknown as http.IncomingMessage);
@@ -144,7 +142,7 @@ export function createProxyServer(providerId: string, cred: ProviderCredential):
             return;
           }
           const openAIRes = JSON.parse(responseBody);
-          const anthropicRes = openAIToAnthropic(openAIRes, PROXY_MODEL);
+          const anthropicRes = openAIToAnthropic(openAIRes, anthropicReq.model);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(anthropicRes));
         }

@@ -18,7 +18,7 @@
 ## Features
 
 - DeepSeek V4 Pro - Best quality models for complex coding tasks
-- Automatic fallback - Seamless fallback: Pro -> Flash -> Chat
+- Automatic fallback - Seamless fallback: Pro -> Flash
 - Session history - Track all your conversations and sessions
 - One-command setup - Interactive wizard for effortless configuration
 - Health check - Built-in diagnostic tool
@@ -130,7 +130,6 @@ History:
 Models:
    deepseek-v4-pro: Available
    deepseek-v4-flash: Available
-   deepseek-chat: Available
 ```
 
 ---

@@ -1,9 +1,9 @@
 import { Command } from 'commander';
 import readline from 'readline';
+import { spawn } from 'child_process';
 import { createRequire } from 'module';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import type { Message } from '../types/index.js';
 import {
   setApiKey,
   unsetApiKey,
@@ -12,10 +12,10 @@ import {
   readConfig,
   writeConfig,
   redactKey,
+  getProviderCredential,
 } from '../config/index.js';
 import { ModelRegistry } from '../models/index.js';
 import { buildAllConfiguredProviders, buildProvider, getDefaultModel, SUPPORTED_PROVIDERS } from './provider-factory.js';
-import { Router, appendRoutingLog } from '../routing/index.js';
 import type { ModelCapability } from '../types/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -49,97 +49,45 @@ function promptSecret(question: string): Promise<string> {
   });
 }
 
-async function resolveProviders(options: { provider?: string }) {
-  const config = readConfig();
-  const allProviders = buildAllConfiguredProviders();
+// Base URLs for each provider's Anthropic-compatible endpoint
+const PROVIDER_BASE_URLS: Record<string, string> = {
+  deepseek: 'https://api.deepseek.com/v1',
+  openai: 'https://api.openai.com/v1',
+  anthropic: 'https://api.anthropic.com',
+  openrouter: 'https://openrouter.ai/api/v1',
+  kimi: 'https://api.moonshot.cn/v1',
+  glm: 'https://open.bigmodel.cn/api/paas/v4',
+};
 
-  if (allProviders.length === 0) {
-    console.error('No providers configured. Run: orion setup');
+function launchClaude(providerId: string, extraArgs: string[]): void {
+  const cred = getProviderCredential(providerId);
+  if (!cred?.apiKey) {
+    console.error(`Provider '${providerId}' is not configured. Run: orion providers add ${providerId}`);
     process.exit(1);
   }
 
-  if (options.provider) {
-    const p = buildProvider(options.provider);
-    if (!p) {
-      console.error(`Provider '${options.provider}' is not configured. Run: orion providers add ${options.provider}`);
-      process.exit(1);
+  const model = cred.defaultModel ?? getDefaultModel(providerId);
+  const baseUrl = cred.baseUrl ?? PROVIDER_BASE_URLS[providerId];
+
+  const env = {
+    ...process.env,
+    ANTHROPIC_API_KEY: cred.apiKey,
+    ...(baseUrl ? { ANTHROPIC_BASE_URL: baseUrl } : {}),
+  };
+
+  const args = ['--model', model, ...extraArgs];
+  const child = spawn('claude', args, { stdio: 'inherit', env });
+
+  child.on('error', (err) => {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      console.error('Claude Code not found. Install it: npm install -g @anthropic-ai/claude-code');
+    } else {
+      console.error(`Failed to launch claude: ${err.message}`);
     }
-    return { providers: [p], config };
-  }
-
-  if (config.defaultProvider) {
-    const def = buildProvider(config.defaultProvider);
-    if (def) {
-      const rest = allProviders.filter((p) => p.id !== config.defaultProvider);
-      return { providers: [def, ...rest], config };
-    }
-  }
-
-  return { providers: allProviders, config };
-}
-
-async function runChat(options: { provider?: string; model?: string; log?: boolean }) {
-  const { providers, config } = await resolveProviders(options);
-  const providerId = options.provider ?? config.defaultProvider ?? providers[0].id;
-  const providerCred = config.providers[providerId];
-  const model = options.model ?? providerCred?.defaultModel ?? getDefaultModel(providerId);
-  const router = new Router(providers, config);
-  const history: Message[] = [];
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const ask = (q: string): Promise<string> => new Promise((resolve) => rl.question(q, resolve));
-
-  console.log(`Orion ${pkg.version} — ${providerId}/${model}`);
-  console.log('Type your message. Ctrl+C to exit.\n');
-
-  rl.on('close', () => process.exit(0));
-
-  while (true) {
-    const input = await ask('You: ');
-    if (!input.trim()) continue;
-
-    history.push({ role: 'user', content: input });
-
-    try {
-      const result = await router.route({ messages: history, model });
-      const reply = result.response.content;
-      history.push({ role: 'assistant', content: reply });
-
-      console.log(`\nOrion: ${reply}\n`);
-
-      if (result.fallbackUsed) {
-        console.error(`[fallback: ${result.providerId}/${result.modelId}]\n`);
-      }
-
-      if (options.log !== false) {
-        try { appendRoutingLog(result); } catch { /* non-fatal */ }
-      }
-    } catch (err) {
-      console.error(`Error: ${(err as Error).message}\n`);
-    }
-  }
-}
-
-async function runSingleShot(message: string, options: { provider?: string; model?: string; log?: boolean }) {
-  const { providers, config } = await resolveProviders(options);
-  const providerId = options.provider ?? config.defaultProvider ?? providers[0].id;
-  const providerCred = config.providers[providerId];
-  const model = options.model ?? providerCred?.defaultModel ?? getDefaultModel(providerId);
-  const router = new Router(providers, config);
-
-  try {
-    const result = await router.route({ messages: [{ role: 'user', content: message }], model });
-    console.log(result.response.content);
-    if (result.fallbackUsed) {
-      console.error(`\n[fallback: ${result.providerId}/${result.modelId}]`);
-    }
-    if (options.log !== false) {
-      try { appendRoutingLog(result); } catch { /* non-fatal */ }
-    }
-  } catch (err) {
-    console.error(`Error: ${(err as Error).message}`);
     process.exit(1);
-  }
+  });
+
+  child.on('exit', (code) => process.exit(code ?? 0));
 }
 
 export function createCLI(): Command {
@@ -147,23 +95,25 @@ export function createCLI(): Command {
 
   program
     .name('orion')
-    .description('AI coding assistant with multi-provider support')
+    .description('AI coding assistant — launches Claude Code with your configured provider')
     .version(pkg.version, '-v, --version', 'output the current version')
-    .argument('[prompt]', 'send a one-shot message (omit to start interactive session)')
-    .option('-p, --provider <id>', 'provider to use')
-    .option('-m, --model <id>', 'model to use')
-    .option('--no-log', 'do not log this request')
-    .action(async (prompt: string | undefined, options: { provider?: string; model?: string; log: boolean }) => {
-      if (prompt) {
-        await runSingleShot(prompt, options);
-      } else if (!process.stdin.isTTY) {
-        const chunks: Buffer[] = [];
-        for await (const chunk of process.stdin) chunks.push(chunk as Buffer);
-        const piped = Buffer.concat(chunks).toString().trim();
-        if (piped) await runSingleShot(piped, options);
-      } else {
-        await runChat(options);
+    .option('-p, --provider <id>', 'provider to use (overrides default)')
+    .allowUnknownOption(true)
+    .action((_options: { provider?: string }) => {
+      const config = readConfig();
+      const providerId = _options.provider ?? config.defaultProvider;
+
+      if (!providerId) {
+        console.error('No provider configured. Run: orion setup');
+        process.exit(1);
       }
+
+      // pass through any extra args (e.g. orion --resume, orion --help) to claude
+      const extraArgs = process.argv.slice(2).filter(
+        (a) => a !== '-p' && a !== '--provider' && a !== _options.provider,
+      );
+
+      launchClaude(providerId, extraArgs);
     });
 
   // --- providers ---

@@ -1,0 +1,19 @@
+package.json
+  s_baf4f82a7778de::t_f9eab6b51c81d0 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "62eae4f76c3604502e08013b40751c9b862a9fee",
+  "prompts": {},
+  "sessions": {
+    "s_baf4f82a7778de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "64058366-a182-45c5-8406-9b1dab68ee24",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

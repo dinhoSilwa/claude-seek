@@ -245,6 +245,38 @@ export function createCLI(): Command {
 
   program.addCommand(configCmd);
 
+  // --- model (shortcut to get/set default model) ---
+  program
+    .command('model')
+    .description('show or set the default model for a provider')
+    .argument('[model]', 'model id to set (omit to show current)')
+    .option('-p, --provider <id>', 'provider to configure (defaults to default provider)')
+    .action((model: string | undefined, options: { provider?: string }) => {
+      const config = readConfig();
+      const providerId = options.provider ?? config.defaultProvider;
+
+      if (!providerId) {
+        console.error('No provider configured. Run: orion setup');
+        process.exit(1);
+      }
+
+      if (!config.providers[providerId]) {
+        console.error(`Provider '${providerId}' not configured. Run: orion providers add ${providerId}`);
+        process.exit(1);
+      }
+
+      if (!model) {
+        const current = config.providers[providerId].defaultModel ?? getDefaultModel(providerId);
+        console.log(`Provider: ${providerId}`);
+        console.log(`Model:    ${current}`);
+        return;
+      }
+
+      config.providers[providerId] = { ...config.providers[providerId], defaultModel: model };
+      writeConfig(config);
+      console.log(`Model for '${providerId}' set to '${model}'.`);
+    });
+
   // --- models ---
   program
     .command('models')

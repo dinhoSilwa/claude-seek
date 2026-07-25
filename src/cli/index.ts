@@ -16,7 +16,11 @@ import {
 } from '../config/index.js';
 import { ModelRegistry } from '../models/index.js';
 import { buildAllConfiguredProviders, buildProvider, getDefaultModel, SUPPORTED_PROVIDERS } from './provider-factory.js';
+import { startProxy } from '../proxy/index.js';
 import type { ModelCapability } from '../types/index.js';
+
+// Providers with native Anthropic Messages API — no proxy needed
+const NATIVE_ANTHROPIC_PROVIDERS = new Set(['anthropic']);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
@@ -49,17 +53,7 @@ function promptSecret(question: string): Promise<string> {
   });
 }
 
-// Base URLs for each provider's Anthropic-compatible endpoint
-const PROVIDER_BASE_URLS: Record<string, string> = {
-  deepseek: 'https://api.deepseek.com/v1',
-  openai: 'https://api.openai.com/v1',
-  anthropic: 'https://api.anthropic.com',
-  openrouter: 'https://openrouter.ai/api/v1',
-  kimi: 'https://api.moonshot.cn/v1',
-  glm: 'https://open.bigmodel.cn/api/paas/v4',
-};
-
-function launchClaude(providerId: string, extraArgs: string[]): void {
+async function launchClaude(providerId: string, extraArgs: string[]): Promise<void> {
   const cred = getProviderCredential(providerId);
   if (!cred?.apiKey) {
     console.error(`Provider '${providerId}' is not configured. Run: orion providers add ${providerId}`);
@@ -67,13 +61,29 @@ function launchClaude(providerId: string, extraArgs: string[]): void {
   }
 
   const model = cred.defaultModel ?? getDefaultModel(providerId);
-  const baseUrl = cred.baseUrl ?? PROVIDER_BASE_URLS[providerId];
+  let env: NodeJS.ProcessEnv;
 
-  const env = {
-    ...process.env,
-    ANTHROPIC_API_KEY: cred.apiKey,
-    ...(baseUrl ? { ANTHROPIC_BASE_URL: baseUrl } : {}),
-  };
+  if (NATIVE_ANTHROPIC_PROVIDERS.has(providerId)) {
+    // Anthropic native — pass key directly, no proxy
+    env = { ...process.env, ANTHROPIC_API_KEY: cred.apiKey };
+    if (cred.baseUrl) env['ANTHROPIC_BASE_URL'] = cred.baseUrl;
+  } else {
+    // Non-native provider — start translation proxy
+    process.stdout.write(`Starting Orion proxy for ${providerId}... `);
+    const { port, server } = await startProxy(providerId, cred);
+    console.log(`OK (port ${port})`);
+
+    env = {
+      ...process.env,
+      ANTHROPIC_API_KEY: 'orion-proxy',
+      ANTHROPIC_BASE_URL: `http://127.0.0.1:${port}`,
+    };
+
+    // shut down proxy when claude exits
+    process.on('exit', () => server.close());
+    process.on('SIGINT', () => { server.close(); process.exit(0); });
+    process.on('SIGTERM', () => { server.close(); process.exit(0); });
+  }
 
   const args = ['--model', model, ...extraArgs];
   const child = spawn('claude', args, { stdio: 'inherit', env });
@@ -99,7 +109,7 @@ export function createCLI(): Command {
     .version(pkg.version, '-v, --version', 'output the current version')
     .option('-p, --provider <id>', 'provider to use (overrides default)')
     .allowUnknownOption(true)
-    .action((_options: { provider?: string }) => {
+    .action(async (_options: { provider?: string }) => {
       const config = readConfig();
       const providerId = _options.provider ?? config.defaultProvider;
 
@@ -108,12 +118,12 @@ export function createCLI(): Command {
         process.exit(1);
       }
 
-      // pass through any extra args (e.g. orion --resume, orion --help) to claude
+      // pass through any extra args (e.g. --resume, --debug) to claude
       const extraArgs = process.argv.slice(2).filter(
         (a) => a !== '-p' && a !== '--provider' && a !== _options.provider,
       );
 
-      launchClaude(providerId, extraArgs);
+      await launchClaude(providerId, extraArgs);
     });
 
   // --- providers ---

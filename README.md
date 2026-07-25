@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/cover.png" width="800"/>
+  <img src="src/orion_banner.png" width="800"/>
 </div>
 
 ---

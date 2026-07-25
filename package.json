@@ -40,6 +40,7 @@
     "bin/",
     "dist/",
     "scripts/",
+    "src/orion_banner.png",
     "install-orion.sh",
     "uninstall-orion.sh",
     "LICENSE",

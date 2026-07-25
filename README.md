@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="src/orion_banner.png" width="800"/>
+  <img src="https://raw.githubusercontent.com/dinhoSilwa/claude-seek/main/src/orion_banner.png" width="800"/>
 </div>
 
 ---

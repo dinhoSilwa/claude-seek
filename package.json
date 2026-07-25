@@ -1,6 +1,6 @@
 {
   "name": "orion-code",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "AI coding assistant with multi-model support",
   "keywords": [
     "orion",
@@ -40,7 +40,6 @@
     "bin/",
     "dist/",
     "scripts/",
-    "src/orion_banner.png",
     "install-orion.sh",
     "uninstall-orion.sh",
     "LICENSE",

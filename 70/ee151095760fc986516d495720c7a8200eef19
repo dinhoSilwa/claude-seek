@@ -1,0 +1,21 @@
+tests/test_history.bats
+  s_6a553aa6bb7c31::t_d51b1a142d160d 3,16,22,34,42,53,61,67,74-75,83
+tests/test_basic.bats
+  s_6a553aa6bb7c31::t_d51b1a142d160d 5-6,9-10,27-28,34-35,39-40,45-46,50-51,55-56,58,61-62,70,77-78,82-83,88-89,95-96,100-101,105-106,110-111,117-118,122-123,130,133,141,150,153,161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "70ee151095760fc986516d495720c7a8200eef19",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+src/providers/openai.ts
+  s_6a553aa6bb7c31::t_6b2cc8c3ff47ca 1-134
+src/providers/anthropic.ts
+  s_6a553aa6bb7c31::t_0e5192dc9efff9 1-123
+src/providers/kimi.ts
+  s_6a553aa6bb7c31::t_5351a9a318525f 1-96
+src/providers/index.ts
+  s_6a553aa6bb7c31::t_cd9bb62a2de0e6 2-7
+src/providers/openrouter.ts
+  s_6a553aa6bb7c31::t_b718177382ea79 1-111
+src/providers/deepseek.ts
+  s_6a553aa6bb7c31::t_755ddc6ce20093 1-115
+src/providers/glm.ts
+  s_6a553aa6bb7c31::t_c408d345800903 1-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "36ef2684656c880056d816bc84f4d18093031e07",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

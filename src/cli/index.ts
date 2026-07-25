@@ -13,7 +13,7 @@ import {
   redactKey,
 } from '../config/index.js';
 import { ModelRegistry } from '../models/index.js';
-import { buildAllConfiguredProviders, SUPPORTED_PROVIDERS } from './provider-factory.js';
+import { buildAllConfiguredProviders, buildProvider, SUPPORTED_PROVIDERS } from './provider-factory.js';
 import type { ModelCapability } from '../types/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -259,20 +259,78 @@ export function createCLI(): Command {
   program
     .command('doctor')
     .description('check system health and provider connectivity')
-    .action(() => {
-      const providers = listConfiguredProviders();
+    .action(async () => {
       console.log('Orion doctor\n');
-      if (providers.length === 0) {
+      const configured = listConfiguredProviders();
+
+      if (configured.length === 0) {
         console.log('No providers configured.');
         console.log('Run: orion providers add <provider>');
         return;
       }
-      console.log('Configured providers:');
-      for (const { id, credential } of providers) {
-        const status = credential.enabled ? '✓' : '✗';
-        console.log(`  ${status} ${id}`);
+
+      console.log('Provider connectivity:\n');
+      for (const { id, credential } of configured) {
+        if (!credential.enabled) {
+          console.log(`  - ${id.padEnd(12)} disabled`);
+          continue;
+        }
+        const provider = buildProvider(id);
+        if (!provider) {
+          console.log(`  ? ${id.padEnd(12)} unknown provider`);
+          continue;
+        }
+        process.stdout.write(`  checking ${id.padEnd(12)} ... `);
+        try {
+          const ok = await provider.validateApiKey(credential.apiKey);
+          console.log(ok ? 'OK' : 'FAIL — invalid API key');
+        } catch {
+          console.log('FAIL — connection error');
+        }
       }
-      console.log('\nFull connectivity check coming in EPIC-010.');
+    });
+
+  // --- setup ---
+  program
+    .command('setup')
+    .description('interactive setup wizard')
+    .action(async () => {
+      console.log('Orion Setup Wizard\n');
+      console.log(`Supported providers: ${SUPPORTED_PROVIDERS.join(', ')}\n`);
+
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      const ask = (q: string): Promise<string> =>
+        new Promise((resolve) => rl.question(q, resolve));
+
+      const providerInput = await ask('Which provider do you want to add? ');
+      const providerId = providerInput.trim().toLowerCase();
+
+      if (!SUPPORTED_PROVIDERS.includes(providerId)) {
+        console.error(`\nUnknown provider: ${providerId}`);
+        rl.close();
+        process.exit(1);
+      }
+
+      rl.close();
+
+      const apiKey = await promptSecret(`Enter API key for ${providerId}: `);
+      if (!apiKey.trim()) {
+        console.error('API key cannot be empty.');
+        process.exit(1);
+      }
+
+      setApiKey(providerId, apiKey.trim());
+
+      const config = readConfig();
+      if (!config.defaultProvider) {
+        config.defaultProvider = providerId;
+        writeConfig(config);
+        console.log(`\nProvider '${providerId}' configured and set as default.`);
+      } else {
+        console.log(`\nProvider '${providerId}' configured.`);
+      }
+
+      console.log('\nRun `orion doctor` to verify connectivity.');
     });
 
   return program;

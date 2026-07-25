@@ -8,10 +8,10 @@
 
 **AI coding assistant with multi-model support**
 
-[![npm version](https://img.shields.io/npm/v/%40orion-ai%2Fcli.svg)](https://www.npmjs.com/package/@orion-ai/cli)
+[![npm version](https://img.shields.io/npm/v/orion-ai-cli.svg)](https://www.npmjs.com/package/orion-ai-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI Tests](https://github.com/dinhoSilwa/claude-seek/actions/workflows/test.yml/badge.svg)](https://github.com/dinhoSilwa/claude-seek/actions/workflows/test.yml)
-[![npm downloads](https://img.shields.io/npm/dm/%40orion-ai%2Fcli.svg)](https://www.npmjs.com/package/@orion-ai/cli)
+[![npm downloads](https://img.shields.io/npm/dm/orion-ai-cli.svg)](https://www.npmjs.com/package/orion-ai-cli)
 
 ---
 
@@ -30,14 +30,14 @@
 
 ### npm (recommended)
 ```bash
-npm install -g @orion-ai/cli
+npm install -g orion-ai-cli
 orion setup
 orion
 ```
 
 ### yarn
 ```bash
-yarn global add @orion-ai/cli
+yarn global add orion-ai-cli
 orion setup
 orion
 ```

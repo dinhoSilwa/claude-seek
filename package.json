@@ -1,5 +1,5 @@
 {
-  "name": "@orion-ai/cli",
+  "name": "orion-ai-cli",
   "version": "1.3.0",
   "description": "AI coding assistant with multi-model support",
   "keywords": [

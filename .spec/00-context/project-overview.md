@@ -1,28 +1,28 @@
 # Project Overview
 
 ## Nome do projeto
-orion
+Orion
 
 ## Objetivo
-Permitir o uso do **Claude Code** (CLI da Anthropic) com modelos da **DeepSeek** gratuitamente, redirecionando as variáveis de ambiente `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` e `ANTHROPIC_MODEL` para a API compatível com Anthropic da DeepSeek.
-
-O usuário obtém um assistente de código com interface familiar do Claude Code, sem custos de API Anthropic.
+Camada unificada de acesso a múltiplos provedores de inteligência artificial. O Orion permite configurar, alternar e utilizar modelos de diferentes fornecedores (OpenAI, Anthropic, DeepSeek, OpenRouter, Kimi, GLM e outros) através de uma única interface CLI, fazendo chamadas de API diretas sem dependência de binários externos.
 
 ## Escopo
 
 **Dentro do escopo:**
-- CLI de instalação e configuração (setup wizard)
-- Gerenciamento de API key da DeepSeek
-- Seleção e fallback automático de modelos
-- Histórico de sessões
-- Health check (`doctor`)
-- Distribuição via npm e git clone
-- Suporte a Unix/macOS (Linux, macOS)
+- CLI em Node.js + TypeScript com suporte a múltiplos provedores
+- Camada de abstração (provider adapters) isolada por fornecedor
+- Gerenciamento seguro de múltiplas API keys
+- Roteamento inteligente com fallback entre modelos
+- Registro de modelos disponíveis por provedor
+- Compatibilidade com provedores OpenAI API standard
+- Distribuição via npm (`npm install -g orion-code`)
 
-**Fora do escopo:**
-- Suporte nativo a Windows (sem WSL/Git Bash)
-- Implementação própria de chat/LLM
-- Múltiplos provedores (apenas DeepSeek)
+**MVP providers:** DeepSeek, OpenAI, Anthropic, OpenRouter, Kimi (Moonshot AI), GLM
+
+**Fora do escopo (v1):**
+- Suporte nativo a Windows (sem WSL)
+- Modelos locais (Ollama, LM Studio)
+- Interface web ou gráfica
 
 ## Stakeholders
 - **Autor:** Cláudio Silva (dinhoSilwa)

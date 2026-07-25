@@ -64,6 +64,53 @@
 
 ---
 
+### ADR-006 — Reescrita em Node.js + TypeScript
+- **Data:** 2026-07-25
+- **Status:** accepted
+
+**Contexto:** O backlog de evolução para multi-provider exige adapters, criptografia, roteamento inteligente e CLI complexa. Bash não consegue entregar isso de forma sustentável.
+
+**Decisão:** Reescrever o Orion em Node.js + TypeScript. O install script bash é mantido apenas como mecanismo de bootstrap/instalação legado durante a transição.
+
+**Consequências:**
+- (+) Suporte real a adapters, tipagem, testes unitários
+- (+) Ecossistema npm disponível (SDKs dos providers, etc.)
+- (-) Maior complexidade de build (TypeScript → JS)
+- (-) Requer migração dos usuários atuais
+
+---
+
+### ADR-007 — Chamadas de API diretas (sem dependência do Claude Code)
+- **Data:** 2026-07-25
+- **Status:** accepted
+
+**Contexto:** O mecanismo atual (setar `ANTHROPIC_BASE_URL` + chamar `claude` bin) só funciona para providers com API compatível com Anthropic. Multi-provider real exige suporte a formatos distintos (OpenAI, Anthropic, etc.).
+
+**Decisão:** O Orion faz chamadas HTTP diretas para cada provider, sem depender do binário `@anthropic-ai/claude-code`. Cada adapter traduz o formato nativo do provider para a interface interna do Orion.
+
+**Consequências:**
+- (+) Suporte irrestrito a qualquer provider
+- (+) Sem dependência de binários externos
+- (-) Precisa implementar interface de chat própria (readline/terminal)
+- (-) Maior esforço de desenvolvimento inicial
+
+---
+
+### ADR-008 — MVP providers: DeepSeek, OpenAI, Anthropic, OpenRouter, Kimi, GLM
+- **Data:** 2026-07-25
+- **Status:** accepted
+
+**Contexto:** O backlog lista 13+ providers. Implementar todos de uma vez inviabiliza o MVP.
+
+**Decisão:** MVP com 6 providers. DeepSeek por compatibilidade com v1 atual; OpenAI e Anthropic por representatividade; OpenRouter como agregador que cobre dezenas de outros; Kimi e GLM como providers asiáticos de alta relevância.
+
+**Consequências:**
+- (+) Escopo controlado para primeiro release
+- (+) OpenRouter como fallback cobre indiretamente outros 50+ providers
+- (-) Usuários de Groq, Mistral, Cohere precisam esperar v2
+
+---
+
 ### ADR-005 — Inconsistência de versão entre package.json e install script (problema em aberto)
 - **Data:** 2025-07-25
 - **Status:** proposed (pendente resolução)

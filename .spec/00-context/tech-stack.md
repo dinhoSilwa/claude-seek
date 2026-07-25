@@ -1,56 +1,68 @@
 # Tech Stack
 
 ## Runtime
-- Node.js 18+ (requisito mínimo para `@anthropic-ai/claude-code`)
-- npm (vem com Node.js)
+- Node.js 18+ (requisito mínimo)
+- npm 9+
 
 ## Linguagens
-- **Bash** — scripts principais (`install-orion.sh`, `uninstall-orion.sh`, wrapper `bin/orion`)
-- **JSON** — `package.json`, configs gerados em runtime
+- **TypeScript** — código-fonte principal
+- **JavaScript (CommonJS/ESM)** — output compilado
+- **Bash** — scripts de instalação legados (install-orion.sh)
 
-## Dependência principal
-| Pacote | Versão | Papel |
-|--------|--------|-------|
-| `@anthropic-ai/claude-code` | latest | CLI Claude Code — instalado em `~/.orion/node_modules/` no primeiro uso |
-
-Sem outras dependências de produção. O `package.json` do repositório não declara `dependencies`.
-
-## Distribuição
-- **npm** — `npm install -g orion` (recomendado)
-- **yarn** — `yarn global add orion`
-- **git clone** — execução direta de `install-orion.sh`
-
-## Mecanismo central
-```bash
-export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
-export ANTHROPIC_AUTH_TOKEN="$API_KEY"
-export ANTHROPIC_MODEL="$SELECTED_MODEL"
-exec "$SCRIPT_DIR/node_modules/.bin/claude" "${ARGS[@]}"
+## Estrutura do projeto (target)
 ```
-O Claude Code aceita base URL customizada, permitindo substituir o provedor.
-
-## Modelos suportados (fallback em ordem)
-1. `deepseek-v4-pro`
-2. `deepseek-v4-flash` (fallback final)
-
-> `deepseek-chat` e `deepseek-reasoner` foram deprecados em 2026-07-24.
-
-## Armazenamento em runtime
+src/
+├── cli/           # Entry point e handlers de comandos
+├── providers/     # Adapters por fornecedor
+│   ├── base.ts    # Interface/classe abstrata Provider
+│   ├── deepseek.ts
+│   ├── openai.ts
+│   ├── anthropic.ts
+│   ├── openrouter.ts
+│   ├── kimi.ts
+│   └── glm.ts
+├── config/        # Gerenciamento de configuração e keys
+├── router/        # Roteamento inteligente e fallback
+├── models/        # Registro de modelos
+└── types/         # Interfaces TypeScript compartilhadas
+bin/
+└── orion.js       # CLI entry (Node.js, shebang #!/usr/bin/env node)
 ```
-~/.orion/
-├── orion        # executável principal (gerado pelo install)
-├── node_modules/      # @anthropic-ai/claude-code
-├── key                # API key (chmod 600)
-├── config.env         # configurações do usuário
-├── history/           # arquivos .session
-└── logs/              # logs diários
-```
+
+## Dependências planejadas (MVP)
+| Pacote | Uso |
+|--------|-----|
+| `commander` ou `@oclif/core` | Framework CLI |
+| `openai` | SDK OpenAI (compatível com vários providers) |
+| `@anthropic-ai/sdk` | SDK Anthropic direto |
+| `inquirer` ou `@inquirer/prompts` | Prompts interativos (setup wizard) |
+| `conf` ou `keytar` | Armazenamento seguro de configuração |
+| `chalk` | Output colorido |
+| `ora` | Spinners de progresso |
+
+## Ferramentas de build
+- **TypeScript** (`tsc`)
+- **tsup** ou **esbuild** — bundle rápido
 
 ## Ferramentas de qualidade
-- **shellcheck** — lint dos scripts Bash (`install-orion.sh`, `uninstall-orion.sh`)
-- **bats** (Bash Automated Testing System) — testes dos scripts
+- **ESLint** + `@typescript-eslint`
+- **Prettier**
+- **Vitest** — testes unitários
 
 ## CI/CD
 - **GitHub Actions** — `.github/workflows/test.yml`
-- Matrix: Ubuntu + macOS + Windows × Node 18/20/22
-- Windows: apenas verifica instalação via bash, sem testes bats
+- Matrix: Ubuntu + macOS × Node 18/20/22
+
+## MVP Providers
+| Provider | Base URL | Auth | Compat |
+|----------|----------|------|--------|
+| DeepSeek | `https://api.deepseek.com` | Bearer | OpenAI-like |
+| OpenAI | `https://api.openai.com` | Bearer | OpenAI |
+| Anthropic | `https://api.anthropic.com` | x-api-key | Anthropic |
+| OpenRouter | `https://openrouter.ai/api` | Bearer | OpenAI |
+| Kimi (Moonshot) | `https://api.moonshot.cn` | Bearer | OpenAI-like |
+| GLM | `https://open.bigmodel.cn` | Bearer | OpenAI-like |
+
+## Distribuição
+- **npm** — `npm install -g orion-code`
+- **git clone** — `./install-orion.sh`

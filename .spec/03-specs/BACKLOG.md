@@ -1,4 +1,4 @@
-# Backlog — orion
+# Backlog — Orion Multi-Provider AI Gateway
 
 > Fonte de verdade para todo trabalho pendente. Ordenado por prioridade dentro de cada epic.
 
@@ -65,6 +65,86 @@
 | P1 | Melhoria importante, sem workaround aceitável |
 | P2 | Melhoria desejável, existe workaround |
 | P3 | Nice to have, sem urgência |
+
+---
+
+---
+
+## EPIC-005 — Arquitetura Multi-Provider (Reescrita TypeScript)
+**Objetivo:** Base da reescrita em Node.js + TypeScript  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-013 — Setup projeto TypeScript | chore | P0 | planned |
+| TASK-014 — Interfaces TypeScript (Provider, Model, Message) | chore | P0 | planned |
+| TASK-015 — BaseProvider abstrata | feat | P0 | planned |
+| TASK-016 — CLI skeleton (Commander.js) | feat | P0 | planned |
+
+---
+
+## EPIC-006 — Gerenciamento de API Keys
+**Objetivo:** Armazenamento seguro de múltiplas keys  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-017 — Config store seguro | feat | P0 | planned |
+| TASK-018 — Comandos config set/unset/show | feat | P0 | planned |
+| TASK-019 — Ativação/desativação de providers | feat | P1 | planned |
+| TASK-020 — Keys nunca em logs | fix | P0 | planned |
+
+---
+
+## EPIC-007 — Provider Adapters (MVP)
+**Objetivo:** 6 adapters para MVP  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-021 — Adapter DeepSeek | feat | P0 | planned |
+| TASK-022 — Adapter OpenAI | feat | P0 | planned |
+| TASK-023 — Adapter Anthropic | feat | P0 | planned |
+| TASK-024 — Adapter OpenRouter | feat | P1 | planned |
+| TASK-025 — Adapter Kimi (Moonshot) | feat | P1 | planned |
+| TASK-026 — Adapter GLM | feat | P1 | planned |
+
+---
+
+## EPIC-008 — Registro e Padronização de Modelos
+**Objetivo:** Catálogo unificado de modelos  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-027 — Schema de Model | chore | P1 | planned |
+| TASK-028 — Comando `orion models list` | feat | P1 | planned |
+| TASK-029 — Normalização de capabilities | feat | P2 | planned |
+
+---
+
+## EPIC-009 — Roteamento Inteligente
+**Objetivo:** Seleção automática e fallback entre providers  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-030 — Regras de roteamento | feat | P1 | planned |
+| TASK-031 — Fallback automático | feat | P0 | planned |
+| TASK-032 — Log de roteamento | feat | P2 | planned |
+
+---
+
+## EPIC-010 — CLI Multi-Provider
+**Objetivo:** Comandos providers/models e setup multi-provider  
+**Status:** planned
+
+| Task | Tipo | Prioridade | Status |
+|------|------|------------|--------|
+| TASK-033 — Comandos providers list/add/remove | feat | P0 | planned |
+| TASK-034 — Wizard providers add | feat | P1 | planned |
+| TASK-035 — Doctor multi-provider | feat | P1 | planned |
+| TASK-036 — Setup multi-provider | feat | P1 | planned |
 
 ---
 

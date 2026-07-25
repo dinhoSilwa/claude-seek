@@ -4,14 +4,14 @@
 
 ---
 
-# claude-seek
+# Orion
 
-**Claude Code with DeepSeek models - Free AI coding assistant**
+**AI coding assistant with multi-model support**
 
-[![npm version](https://img.shields.io/npm/v/claude-seek.svg)](https://www.npmjs.com/package/claude-seek)
+[![npm version](https://img.shields.io/npm/v/%40orion-ai%2Fcli.svg)](https://www.npmjs.com/package/@orion-ai/cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI Tests](https://github.com/dinhoSilwa/claude-seek/actions/workflows/test.yml/badge.svg)](https://github.com/dinhoSilwa/claude-seek/actions/workflows/test.yml)
-[![npm downloads](https://img.shields.io/npm/dm/claude-seek.svg)](https://www.npmjs.com/package/claude-seek)
+[![npm downloads](https://img.shields.io/npm/dm/%40orion-ai%2Fcli.svg)](https://www.npmjs.com/package/@orion-ai/cli)
 
 ---
 
@@ -30,26 +30,26 @@
 
 ### npm (recommended)
 ```bash
-npm install -g claude-seek
-claude-seek setup
-claude-seek
+npm install -g @orion-ai/cli
+orion setup
+orion
 ```
 
 ### yarn
 ```bash
-yarn global add claude-seek
-claude-seek setup
-claude-seek
+yarn global add @orion-ai/cli
+orion setup
+orion
 ```
 
 ### git clone
 ```bash
 git clone https://github.com/dinhoSilwa/claude-seek.git
 cd claude-seek
-chmod +x install-claude-seek.sh
-./install-claude-seek.sh
-claude-seek setup
-claude-seek
+chmod +x install-orion.sh
+./install-orion.sh
+orion setup
+orion
 ```
 
 ---
@@ -66,20 +66,20 @@ claude-seek
 
 | Command | Description |
 |---------|-------------|
-| `claude-seek` | Start interactive coding session |
-| `claude-seek -p "query"` | Run single query and exit |
-| `claude-seek --model MODEL` | Force specific model (pro/flash/chat) |
-| `claude-seek setup` | Interactive setup wizard |
-| `claude-seek config set-key` | Configure API key |
-| `claude-seek config unset-key` | Remove API key |
-| `claude-seek config show` | Show current settings |
-| `claude-seek history list` | List all sessions |
-| `claude-seek history show <id>` | Show session details |
-| `claude-seek history clear` | Clear all history |
-| `claude-seek doctor` | Health check and diagnostics |
-| `claude-seek update` | Update to latest version |
-| `claude-seek --version` | Show version |
-| `claude-seek --help` | Show help |
+| `orion` | Start interactive coding session |
+| `orion -p "query"` | Run single query and exit |
+| `orion --model MODEL` | Force specific model (pro/flash) |
+| `orion setup` | Interactive setup wizard |
+| `orion config set-key` | Configure API key |
+| `orion config unset-key` | Remove API key |
+| `orion config show` | Show current settings |
+| `orion history list` | List all sessions |
+| `orion history show <id>` | Show session details |
+| `orion history clear` | Clear all history |
+| `orion doctor` | Health check and diagnostics |
+| `orion update` | Update to latest version |
+| `orion --version` | Show version |
+| `orion --help` | Show help |
 
 ---
 
@@ -87,29 +87,29 @@ claude-seek
 
 ### Interactive session
 ```bash
-claude-seek
+orion
 ```
 
 Output:
 ```
-Starting claude-seek with model: deepseek-v4-pro
+Starting orion with model: deepseek-v4-pro
 
 > Create a Python function that calculates Fibonacci
 ```
 
 ### Single query
 ```bash
-claude-seek -p "Explain React hooks in simple terms"
+orion -p "Explain React hooks in simple terms"
 ```
 
 ### Force specific model
 ```bash
-claude-seek --model flash -p "Quick: what's 2+2?"
+orion --model flash -p "Quick: what's 2+2?"
 ```
 
 ### Health check
 ```bash
-claude-seek doctor
+orion doctor
 ```
 
 Output:
@@ -148,8 +148,8 @@ Models:
 
 After installation:
 ```
-~/.claude-seek/
-├── claude-seek              # Main executable
+~/.orion/
+├── orion                    # Main executable
 ├── node_modules/            # Dependencies
 ├── key                      # API key (secure, 600 permissions)
 ├── config.env               # User configuration
@@ -169,17 +169,17 @@ bats tests/
 
 ### Run shellcheck
 ```bash
-shellcheck install-claude-seek.sh uninstall-claude-seek.sh
+shellcheck install-orion.sh uninstall-orion.sh
 ```
 
 ### Local installation
 ```bash
-./install-claude-seek.sh
+./install-orion.sh
 ```
 
 ### Uninstall
 ```bash
-./uninstall-claude-seek.sh
+./uninstall-orion.sh
 ```
 
 ---

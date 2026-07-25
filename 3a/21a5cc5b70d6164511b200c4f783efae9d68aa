@@ -1,0 +1,19 @@
+src/cli/index.ts
+  s_6a553aa6bb7c31::t_aa1a0870965e88 6,27,52-144,151-167,183,194,198,200,208,213,216-217,223,226-227,238,241,243,251,253,257,262,276,292,295,297-298,302,304,308-309,317,321,323,325,330,342,346,350,353-354
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3a21a5cc5b70d6164511b200c4f783efae9d68aa",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

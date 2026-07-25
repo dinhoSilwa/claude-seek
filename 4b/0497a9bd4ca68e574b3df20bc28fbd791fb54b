@@ -1,0 +1,34 @@
+src/cli/index.ts
+  s_6a553aa6bb7c31::t_45e52bec30dfba 19,22-23
+  s_6a553aa6bb7c31::t_c07a663469b251 112,121,126
+  s_6a553aa6bb7c31::t_62357e74a99934 24
+  s_6a553aa6bb7c31::t_03f87df287f2bf 56,64-86
+.spec/03-specs/epics/EPIC-011.md
+  s_6a553aa6bb7c31::t_95f703409229f5 1-31
+src/proxy/translate.ts
+  s_6a553aa6bb7c31::t_d32ac3b72311a8 1-123
+src/proxy/stream.ts
+  s_6a553aa6bb7c31::t_4a1a2c2dd72424 1-130
+src/proxy/server.ts
+  s_6a553aa6bb7c31::t_f2ab80dda5fe60 1-160
+package.json
+  s_6a553aa6bb7c31::t_639dc4e7dcb611 3
+src/proxy/index.ts
+  s_6a553aa6bb7c31::t_724bae6f846c9d 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "4b0497a9bd4ca68e574b3df20bc28fbd791fb54b",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

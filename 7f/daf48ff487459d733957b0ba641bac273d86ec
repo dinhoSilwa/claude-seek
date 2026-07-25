@@ -1,0 +1,24 @@
+install-claude-seek.sh
+  s_6a553aa6bb7c31::t_336fc175625ed0 6
+  s_6a553aa6bb7c31::t_0df2a0da222e13 19
+  s_6a553aa6bb7c31::t_604498259933d9 5
+  s_6a553aa6bb7c31::t_6be306c4232121 47,50,69,107-112,114,116-126,185,217,223-224,444,459,514,560,590
+package.json
+  s_6a553aa6bb7c31::t_07da2b6c39f812 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7fdaf48ff487459d733957b0ba641bac273d86ec",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

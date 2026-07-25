@@ -1,0 +1,30 @@
+scripts/mock-upstream.mjs
+  s_6a553aa6bb7c31::t_a4a9979cf49c6e 1-89
+scripts/test-proxy-local.mjs
+  s_6a553aa6bb7c31::t_8406c002d14d14 1-166
+scripts/test-proxy.mjs
+  s_6a553aa6bb7c31::t_8e5ef8358b7121 1-23
+package.json
+  s_6a553aa6bb7c31::t_4f81682fe4da42 36
+src/proxy/server.ts
+  s_6a553aa6bb7c31::t_695023cee94b0d 40-41
+  s_6a553aa6bb7c31::t_6d29705e01eb12 66-71
+  s_6a553aa6bb7c31::t_c14e014265e064 129,136-137,140,147
+  s_6a553aa6bb7c31::t_7ea2bed529af83 113,117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "07ff2833b013c9fa6f7d73c36eb771a17ee4913e",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

@@ -9,10 +9,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.claude-seek"
+INSTALL_DIR="$HOME/.orion"
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🗑️  Uninstalling claude-seek${NC}"
+echo -e "${BLUE}🗑️  Uninstalling orion${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -46,9 +46,9 @@ detect_profile() {
 
 PROFILE=$(detect_profile)
 if [ -n "$PROFILE" ] && [ -f "$PROFILE" ]; then
-    if grep -q "/.claude-seek:" "$PROFILE" 2>/dev/null; then
+    if grep -q "/.orion:" "$PROFILE" 2>/dev/null; then
         echo -e "${BLUE}📝 Cleaning $PROFILE...${NC}"
-        sed -i.bak '/\/.claude-seek:/d' "$PROFILE"
+        sed -i.bak '/\/.orion:/d' "$PROFILE"
         echo -e "${GREEN}   ✅ Cleaned${NC}"
     fi
 fi

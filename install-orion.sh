@@ -12,11 +12,11 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-INSTALL_DIR="$HOME/.claude-seek"
-WRAPPER_SCRIPT="claude-seek"
+INSTALL_DIR="$HOME/.orion"
+WRAPPER_SCRIPT="orion"
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}🚀 Installing claude-seek v${VERSION}${NC}"
+echo -e "${BLUE}🚀 Installing orion v${VERSION}${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -46,7 +46,7 @@ if [ ! -f "package.json" ]; then
     echo -e "${BLUE}📦 Initializing npm project...${NC}"
     cat > package.json << PKGEOF
 {
-  "name": "claude-seek",
+  "name": "orion",
   "version": "${VERSION}",
   "description": "Claude Code with DeepSeek models",
   "private": true
@@ -66,7 +66,7 @@ echo -e "${BLUE}📝 Creating wrapper script...${NC}"
 cat > "$INSTALL_DIR/$WRAPPER_SCRIPT" << 'WRAPPEREOF'
 #!/bin/bash
 
-# claude-seek v__VERSION__ - Claude Code with DeepSeek
+# orion v__VERSION__ - Claude Code with DeepSeek
 
 set -e
 
@@ -96,7 +96,7 @@ ICON_ROCKET="🚀"
 # ============================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_DIR="$HOME/.claude-seek"
+CONFIG_DIR="$HOME/.orion"
 HISTORY_DIR="$CONFIG_DIR/history"
 LOG_DIR="$CONFIG_DIR/logs"
 
@@ -130,7 +130,7 @@ fi
 # LOGGING
 # ============================================
 
-LOG_FILE="$LOG_DIR/claude-seek-$(date +%Y%m%d).log"
+LOG_FILE="$LOG_DIR/orion-$(date +%Y%m%d).log"
 
 log_msg() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"
@@ -301,7 +301,7 @@ clear_history() {
 
 run_setup() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${BLUE}✨ claude-seek Setup Wizard${NC}"
+    echo -e "${BLUE}✨ orion Setup Wizard${NC}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     
@@ -327,7 +327,7 @@ run_setup() {
     echo -e "${CYAN}Step 2: Default Model${NC}"
     echo "   1) deepseek-v4-pro (best quality)"
     echo "   2) deepseek-v4-flash (faster)"
-    echo "   3) auto (let claude-seek choose)"
+    echo "   3) auto (let orion choose)"
     read -p "   Choice (1/2/3) [3]: " choice
     case "$choice" in
         1) DEFAULT_MODEL="deepseek-v4-pro" ;;
@@ -364,7 +364,7 @@ EOF
     
     echo -e "${GREEN}${ICON_CHECK} Configuration saved${NC}"
     echo ""
-    echo -e "${GREEN}${ICON_CHECK} Setup complete! Run 'claude-seek' to start${NC}"
+    echo -e "${GREEN}${ICON_CHECK} Setup complete! Run 'orion' to start${NC}"
 }
 
 # ============================================
@@ -408,7 +408,7 @@ cmd_show_config() {
 
 cmd_doctor() {
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${BOLD}${BLUE}🏥 claude-seek Doctor${NC}"
+    echo -e "${BOLD}${BLUE}🏥 orion Doctor${NC}"
     echo -e "${BOLD}${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     
@@ -429,7 +429,7 @@ cmd_doctor() {
         fi
     else
         echo "   Status: Missing"
-        echo "   Run: claude-seek config set-key"
+        echo "   Run: orion config set-key"
     fi
     echo ""
     
@@ -456,12 +456,12 @@ cmd_doctor() {
 
 cmd_help() {
     cat << 'EOF'
-claude-seek v__VERSION__ - Claude Code with DeepSeek
+orion v__VERSION__ - Claude Code with DeepSeek
 
 USAGE:
-  claude-seek                    Start interactive session
-  claude-seek -p "query"         Run query and exit
-  claude-seek --model MODEL      Force specific model
+  orion                    Start interactive session
+  orion -p "query"         Run query and exit
+  orion --model MODEL      Force specific model
 
 COMMANDS:
   setup              Interactive setup wizard
@@ -480,9 +480,9 @@ ENVIRONMENT:
   NO_COLOR           Disable colored output
 
 EXAMPLES:
-  claude-seek setup
-  claude-seek -p "Write a function"
-  claude-seek --model flash
+  orion setup
+  orion -p "Write a function"
+  orion --model flash
 EOF
     exit 0
 }
@@ -498,7 +498,7 @@ case "${1:-}" in
             set-key) cmd_set_key ;;
             unset-key) cmd_unset_key ;;
             show) cmd_show_config ;;
-            *) echo "Usage: claude-seek config {set-key|unset-key|show}"; exit 1 ;;
+            *) echo "Usage: orion config {set-key|unset-key|show}"; exit 1 ;;
         esac
         ;;
     history)
@@ -506,24 +506,24 @@ case "${1:-}" in
             list) list_sessions ;;
             show) shift 2; show_session "$1" ;;
             clear) clear_history ;;
-            *) echo "Usage: claude-seek history {list|show <id>|clear}"; exit 1 ;;
+            *) echo "Usage: orion history {list|show <id>|clear}"; exit 1 ;;
         esac
         ;;
     doctor) cmd_doctor ;;
     --help|-h) cmd_help ;;
-    --version|-v) echo "claude-seek v__VERSION__"; exit 0 ;;
+    --version|-v) echo "orion v__VERSION__"; exit 0 ;;
 esac
 
 # ============================================
 # MAIN EXECUTION
 # ============================================
 
-CLAUDESEEK_MODEL=""
+ORION_MODEL=""
 ARGS=()
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --model) CLAUDESEEK_MODEL="$2"; shift 2 ;;
+        --model) ORION_MODEL="$2"; shift 2 ;;
         *) ARGS+=("$1"); shift ;;
     esac
 done
@@ -531,7 +531,7 @@ done
 API_KEY=$(get_api_key)
 if [ -z "$API_KEY" ]; then
     echo -e "${RED}${ICON_CROSS} Error: No API key found${NC}"
-    echo -e "${YELLOW}${ICON_WARN} Run: claude-seek setup${NC}"
+    echo -e "${YELLOW}${ICON_WARN} Run: orion setup${NC}"
     exit 1
 fi
 
@@ -540,7 +540,7 @@ if ! validate_api_key "$API_KEY"; then
     exit 1
 fi
 
-SELECTED_MODEL=$(select_model "$API_KEY" "$CLAUDESEEK_MODEL")
+SELECTED_MODEL=$(select_model "$API_KEY" "$ORION_MODEL")
 
 if [ "$HISTORY_ENABLED" = "true" ]; then
     SESSION_ID=$(get_session_id)
@@ -551,7 +551,7 @@ export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
 export ANTHROPIC_AUTH_TOKEN="$API_KEY"
 export ANTHROPIC_MODEL="$SELECTED_MODEL"
 
-echo -e "${CYAN}${ICON_ROCKET} Starting claude-seek with model: $SELECTED_MODEL${NC}"
+echo -e "${CYAN}${ICON_ROCKET} Starting orion with model: $SELECTED_MODEL${NC}"
 echo ""
 
 exec "$SCRIPT_DIR/node_modules/.bin/claude" "${ARGS[@]}"
@@ -579,8 +579,8 @@ detect_profile() {
 PROFILE=$(detect_profile)
 
 if [ -n "$PROFILE" ] && [ -f "$PROFILE" ]; then
-    if ! grep -q "/.claude-seek:" "$PROFILE" 2>/dev/null; then
-        echo "export PATH=\"\$HOME/.claude-seek:\$PATH\"" >> "$PROFILE"
+    if ! grep -q "/.orion:" "$PROFILE" 2>/dev/null; then
+        echo "export PATH=\"\$HOME/.orion:\$PATH\"" >> "$PROFILE"
         echo -e "${GREEN}   ✅ Added to $PROFILE${NC}"
     fi
 fi
@@ -591,11 +591,11 @@ echo -e "${GREEN}🎉 Installation complete! (v${VERSION})${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo -e "${BLUE}Quick Start:${NC}"
-echo "   claude-seek setup"
-echo "   claude-seek"
+echo "   orion setup"
+echo "   orion"
 echo ""
 echo -e "${BLUE}Commands:${NC}"
-echo "   claude-seek doctor"
-echo "   claude-seek config show"
-echo "   claude-seek history list"
+echo "   orion doctor"
+echo "   orion config show"
+echo "   orion history list"
 echo ""

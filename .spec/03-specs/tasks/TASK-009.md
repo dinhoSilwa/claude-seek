@@ -6,7 +6,7 @@
 - **Status:** planned
 
 ## Contexto
-Atualmente a versão está espalhada em múltiplos lugares (`package.json`, `install-claude-seek.sh` em várias linhas). Um release manual esquece de atualizar algum, gerando inconsistências como a atual (1.0.2 vs 1.3.0).
+Atualmente a versão está espalhada em múltiplos lugares (`package.json`, `install-orion.sh` em várias linhas). Um release manual esquece de atualizar algum, gerando inconsistências como a atual (1.0.2 vs 1.3.0).
 
 ## Descrição
 Criar `scripts/release.sh` que automatiza o bump de versão e garante consistência.
@@ -22,7 +22,7 @@ Criar `scripts/release.sh` que automatiza o bump de versão e garante consistên
 1. Ler versão atual de `package.json`
 2. Calcular nova versão
 3. Atualizar `package.json` via `npm version` (sem criar tag ainda)
-4. Atualizar todas as ocorrências de versão em `install-claude-seek.sh` via `sed`
+4. Atualizar todas as ocorrências de versão em `install-orion.sh` via `sed`
 5. Atualizar `CHANGELOG.md` com a nova entrada
 6. Criar commit: `chore: release vX.Y.Z`
 7. Criar tag git: `vX.Y.Z`
@@ -31,7 +31,7 @@ Criar `scripts/release.sh` que automatiza o bump de versão e garante consistên
 ## Arquivos relevantes
 - `scripts/` — criar `release.sh`
 - `package.json`
-- `install-claude-seek.sh`
+- `install-orion.sh`
 - `CHANGELOG.md` (depende de TASK-010)
 
 ## Definition of Done

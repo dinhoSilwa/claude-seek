@@ -29,8 +29,8 @@ type(scope): description
 
 | Escopo | Área |
 |--------|------|
-| `install` | install-claude-seek.sh |
-| `wrapper` | wrapper gerado em ~/.claude-seek |
+| `install` | install-orion.sh |
+| `wrapper` | wrapper gerado em ~/.orion |
 | `config` | gerenciamento de configuração |
 | `models` | seleção e fallback de modelos |
 | `history` | histórico de sessões |

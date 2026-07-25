@@ -4,12 +4,12 @@
 
 ### US-001 — Instalar e usar pela primeira vez
 - **Como** desenvolvedor com Node.js instalado
-- **Quero** instalar o claude-seek via npm e começar a usá-lo
+- **Quero** instalar o orion via npm e começar a usá-lo
 - **Para** ter um assistente de código gratuito sem configuração complexa
 - **Critérios de aceite:**
-  - [ ] `npm install -g claude-seek` completa sem erros
-  - [ ] `claude-seek setup` guia pelo processo de configuração
-  - [ ] `claude-seek` inicia uma sessão interativa após setup
+  - [ ] `npm install -g orion` completa sem erros
+  - [ ] `orion setup` guia pelo processo de configuração
+  - [ ] `orion` inicia uma sessão interativa após setup
 
 ---
 
@@ -18,7 +18,7 @@
 - **Quero** salvar minha API key DeepSeek de forma segura
 - **Para** não precisar digitá-la a cada uso e não expô-la acidentalmente
 - **Critérios de aceite:**
-  - [ ] Key salva em `~/.claude-seek/key` com chmod 600
+  - [ ] Key salva em `~/.orion/key` com chmod 600
   - [ ] Key nunca aparece em logs ou output do terminal
   - [ ] `DEEPSEEK_API_KEY` no ambiente tem prioridade sobre arquivo salvo
 
@@ -29,8 +29,8 @@
 - **Quero** forçar o uso de um modelo específico
 - **Para** controlar qualidade vs velocidade da resposta
 - **Critérios de aceite:**
-  - [ ] `claude-seek --model flash` usa deepseek-v4-flash
-  - [ ] `claude-seek --model pro` usa deepseek-v4-pro
+  - [ ] `orion --model flash` usa deepseek-v4-flash
+  - [ ] `orion --model pro` usa deepseek-v4-pro
   - [ ] Modelo inválido exibe mensagem de erro clara
 
 ---
@@ -40,7 +40,7 @@
 - **Quero** executar um diagnóstico
 - **Para** entender o que está errado sem depurar manualmente
 - **Critérios de aceite:**
-  - [ ] `claude-seek doctor` exibe versão do Node.js e npm
+  - [ ] `orion doctor` exibe versão do Node.js e npm
   - [ ] Exibe status da API key (configurada / inválida / ausente)
   - [ ] Exibe disponibilidade de cada modelo
   - [ ] Exibe número de sessões no histórico
@@ -52,9 +52,9 @@
 - **Quero** ver o histórico das minhas sessões anteriores
 - **Para** rastrear quando e em qual projeto usei a ferramenta
 - **Critérios de aceite:**
-  - [ ] `claude-seek history list` exibe sessões com ID, data e modelo
-  - [ ] `claude-seek history show <id>` exibe detalhes da sessão
-  - [ ] `claude-seek history clear` remove todo o histórico
+  - [ ] `orion history list` exibe sessões com ID, data e modelo
+  - [ ] `orion history show <id>` exibe detalhes da sessão
+  - [ ] `orion history clear` remove todo o histórico
 
 ---
 
@@ -63,5 +63,5 @@
 - **Quero** passar uma query diretamente pela linha de comando
 - **Para** integrar o assistente em automações
 - **Critérios de aceite:**
-  - [ ] `claude-seek -p "query"` executa e encerra
+  - [ ] `orion -p "query"` executa e encerra
   - [ ] Exit code 0 em sucesso, não-zero em erro

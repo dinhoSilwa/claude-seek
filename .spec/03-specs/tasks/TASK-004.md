@@ -15,22 +15,22 @@ Expandir a suíte de testes com casos que não dependam de API key real (usar mo
 
 ```bash
 # Sem API key configurada
-@test "claude-seek sem API key exibe mensagem de erro"
-@test "claude-seek sem API key retorna exit code não-zero"
+@test "orion sem API key exibe mensagem de erro"
+@test "orion sem API key retorna exit code não-zero"
 
 # Config
-@test "claude-seek config show executa sem erros"
+@test "orion config show executa sem erros"
 
 # History
-@test "claude-seek history list executa sem erros"
-@test "claude-seek history clear executa sem erros"
+@test "orion history list executa sem erros"
+@test "orion history clear executa sem erros"
 
 # Validação de flags
-@test "claude-seek --model com valor inválido não trava"
+@test "orion --model com valor inválido não trava"
 
 # Shellcheck
-@test "install-claude-seek.sh passa no shellcheck"
-@test "uninstall-claude-seek.sh passa no shellcheck"
+@test "install-orion.sh passa no shellcheck"
+@test "uninstall-orion.sh passa no shellcheck"
 ```
 
 ## Arquivos relevantes

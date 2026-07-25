@@ -15,7 +15,7 @@
 - [ ] TASK-004 — Expandir cobertura de testes bats
 
 ## Critérios de conclusão
-- `package.json` e `install-claude-seek.sh` reportam a mesma versão
+- `package.json` e `install-orion.sh` reportam a mesma versão
 - `config.env` não permite execução de código arbitrário
 - Modelos listados no fallback existem de fato na API DeepSeek
 - Testes cobrem fluxos de chave inválida e fallback de modelo

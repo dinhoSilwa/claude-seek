@@ -1,4 +1,4 @@
-# PRD — claude-seek
+# PRD — orion
 
 ## Problema
 Desenvolvedores querem usar o Claude Code (assistente de código da Anthropic) mas os custos de API Anthropic são uma barreira. A DeepSeek oferece modelos compatíveis com a API Anthropic a custo zero ou muito baixo, mas não existe uma ferramenta que conecte os dois sem configuração manual complexa.
@@ -23,16 +23,16 @@ Desenvolvedores querem usar o Claude Code (assistente de código da Anthropic) m
 ## Requisitos Funcionais
 | ID | Requisito |
 |----|-----------|
-| RF-001 | Instalar via `npm install -g claude-seek` |
-| RF-002 | Wizard interativo de setup (`claude-seek setup`) |
+| RF-001 | Instalar via `npm install -g orion` |
+| RF-002 | Wizard interativo de setup (`orion setup`) |
 | RF-003 | Validar API key DeepSeek durante setup |
 | RF-004 | Selecionar modelo automaticamente com fallback |
 | RF-005 | Forçar modelo específico via `--model` |
 | RF-006 | Executar query direta via `-p "query"` |
 | RF-007 | Listar, visualizar e limpar histórico de sessões |
-| RF-008 | Health check com diagnóstico (`claude-seek doctor`) |
+| RF-008 | Health check com diagnóstico (`orion doctor`) |
 | RF-009 | Gerenciar API key (`config set-key`, `config unset-key`, `config show`) |
-| RF-010 | Desinstalar completamente via `uninstall-claude-seek.sh` |
+| RF-010 | Desinstalar completamente via `uninstall-orion.sh` |
 
 ## Requisitos Não-Funcionais
 | ID | Requisito | Meta |
@@ -44,6 +44,6 @@ Desenvolvedores querem usar o Claude Code (assistente de código da Anthropic) m
 | RNF-005 | Versão mínima Node.js | 18+ |
 
 ## Critérios de sucesso
-- `npm install -g claude-seek && claude-seek setup && claude-seek` funciona em menos de 5 minutos
+- `npm install -g orion && orion setup && orion` funciona em menos de 5 minutos
 - API key nunca aparece em logs ou output
 - Fallback de modelo transparente para o usuário

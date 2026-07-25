@@ -7,4 +7,4 @@
 - **Status:** planned
 
 ## Entregável
-`claude-seek update` funciona conforme documentado no README.
+`orion update` funciona conforme documentado no README.

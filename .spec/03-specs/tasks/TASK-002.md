@@ -6,7 +6,7 @@
 - **Status:** planned
 
 ## Contexto
-O wrapper gerado pelo `install-claude-seek.sh` executa `source "$CONFIG_FILE"` (linha 114 do script gerado). Isso significa que qualquer conteúdo em `~/.claude-seek/config.env` é executado como código Bash. Se um atacante conseguir escrever nesse arquivo, obtém execução de código no contexto do usuário.
+O wrapper gerado pelo `install-orion.sh` executa `source "$CONFIG_FILE"` (linha 114 do script gerado). Isso significa que qualquer conteúdo em `~/.orion/config.env` é executado como código Bash. Se um atacante conseguir escrever nesse arquivo, obtém execução de código no contexto do usuário.
 
 ## Descrição
 Substituir `source "$CONFIG_FILE"` por leitura segura variável a variável usando `grep`.
@@ -27,7 +27,7 @@ LOG_LEVEL=$(grep '^LOG_LEVEL=' "$CONFIG_FILE" | cut -d'=' -f2 | tr -d '[:space:]
 Manter valores default caso a variável esteja ausente no arquivo.
 
 ## Arquivos relevantes
-- `install-claude-seek.sh` — bloco que gera o wrapper (a partir da linha 64), seção "Load user config" dentro do heredoc `WRAPPEREOF`
+- `install-orion.sh` — bloco que gera o wrapper (a partir da linha 64), seção "Load user config" dentro do heredoc `WRAPPEREOF`
 
 ## Definition of Ready
 - [x] Spec completa

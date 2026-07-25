@@ -13,6 +13,6 @@
 - [ ] TASK-007 — Melhorar mensagens de erro
 
 ## Critérios de conclusão
-- `claude-seek update` funciona e atualiza o executável
+- `orion update` funciona e atualiza o executável
 - Seleção de modelo exibe progresso ao usuário
 - Mensagens de erro incluem ação corretiva clara

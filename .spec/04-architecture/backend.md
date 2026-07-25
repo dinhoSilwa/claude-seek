@@ -1,25 +1,25 @@
-# Architecture — claude-seek
+# Architecture — orion
 
 > Este projeto é uma ferramenta CLI pura em Bash. Não há frontend, backend web ou banco de dados. A arquitetura é de scripts shell.
 
 ## Fluxo principal
 
 ```
-npm install -g claude-seek
+npm install -g orion
         │
         ▼
-bin/claude-seek (wrapper npm)
+bin/orion (wrapper npm)
         │
-        ├─ ~/.claude-seek/claude-seek existe?
+        ├─ ~/.orion/orion existe?
         │       │
-        │      NÃO → executa install-claude-seek.sh
+        │      NÃO → executa install-orion.sh
         │               │
         │               ├─ verifica Node.js + npm
-        │               ├─ cria ~/.claude-seek/
+        │               ├─ cria ~/.orion/
         │               ├─ npm install @anthropic-ai/claude-code
-        │               └─ gera ~/.claude-seek/claude-seek (wrapper real)
+        │               └─ gera ~/.orion/orion (wrapper real)
         │
-        └─ exec ~/.claude-seek/claude-seek "$@"
+        └─ exec ~/.orion/orion "$@"
                 │
                 ├─ parse argumentos (setup / config / history / doctor / --help / --version)
                 │
@@ -46,8 +46,8 @@ bin/claude-seek (wrapper npm)
 ## Armazenamento
 
 ```
-~/.claude-seek/
-├── claude-seek          # executável gerado pelo install
+~/.orion/
+├── orion          # executável gerado pelo install
 ├── node_modules/        # @anthropic-ai/claude-code (instalado pelo npm)
 ├── package.json         # projeto npm local (private: true)
 ├── key                  # API key em texto plano (chmod 600)
@@ -55,11 +55,11 @@ bin/claude-seek (wrapper npm)
 ├── history/
 │   └── YYYYMMDD_HHMMSS_PID.session   # metadados de sessão
 └── logs/
-    └── claude-seek-YYYYMMDD.log      # logs diários
+    └── orion-YYYYMMDD.log      # logs diários
 ```
 
 ## Dependência externa crítica
-`@anthropic-ai/claude-code` — o binário real que faz o trabalho de assistente de código. O claude-seek apenas configura o ambiente e delega com `exec`.
+`@anthropic-ai/claude-code` — o binário real que faz o trabalho de assistente de código. O orion apenas configura o ambiente e delega com `exec`.
 
 ## Pontos de falha conhecidos
 1. `select_model` faz 3 chamadas HTTP sequenciais na inicialização (lento se API estiver instável)

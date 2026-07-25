@@ -15,14 +15,14 @@ Padronizar todas as mensagens de erro para incluir: problema + causa provável +
 
 | Situação | Atual | Esperado |
 |----------|-------|----------|
-| API key ausente | `✗ Error: No API key found` | `✗ No API key found. Run: claude-seek setup` |
+| API key ausente | `✗ Error: No API key found` | `✗ No API key found. Run: orion setup` |
 | API key inválida | `✗ Error: Invalid API key` | `✗ Invalid API key. Check your key at platform.deepseek.com` |
 | Nenhum modelo disponível | sem mensagem (usa fallback silencioso) | `⚠ All models unavailable. Check API status or your key` |
 | Node.js ausente (install) | `❌ Node.js not found` | `❌ Node.js not found. Install from nodejs.org (v18+)` |
 | npm ausente (install) | `❌ npm not found` | `❌ npm not found. Reinstall Node.js from nodejs.org` |
 
 ## Arquivos relevantes
-- `install-claude-seek.sh` — dentro do heredoc `WRAPPEREOF`, funções `cmd_*` e fluxo principal
+- `install-orion.sh` — dentro do heredoc `WRAPPEREOF`, funções `cmd_*` e fluxo principal
 
 ## Definition of Done
 - [ ] Todas as mensagens de erro listadas acima atualizadas

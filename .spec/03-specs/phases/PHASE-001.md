@@ -7,4 +7,4 @@
 - **Status:** planned
 
 ## Entregável
-`package.json`, `install-claude-seek.sh` e output de `--version` reportam a mesma versão.
+`package.json`, `install-orion.sh` e output de `--version` reportam a mesma versão.

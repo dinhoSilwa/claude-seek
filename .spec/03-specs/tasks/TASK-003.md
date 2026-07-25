@@ -21,7 +21,7 @@ O fallback de modelos tenta `deepseek-v4-pro` → `deepseek-v4-flash` → `deeps
 - `deepseek-v4-pro` / `deepseek-v4-flash` — verificar existência real
 
 ## Arquivos relevantes
-- `install-claude-seek.sh` — função `select_model` (linha ~189) e lista de modelos (linha ~205)
+- `install-orion.sh` — função `select_model` (linha ~189) e lista de modelos (linha ~205)
 - `README.md` — seção Features e tabela de comandos
 
 ## Definition of Ready
@@ -31,5 +31,5 @@ O fallback de modelos tenta `deepseek-v4-pro` → `deepseek-v4-flash` → `deeps
 ## Definition of Done
 - [ ] Nomes de modelos no fallback são reais e funcionais
 - [ ] README atualizado com modelos corretos
-- [ ] `claude-seek doctor` exibe status real dos modelos
+- [ ] `orion doctor` exibe status real dos modelos
 - [ ] Commit: `[TASK-003] fix: corrigir nomes dos modelos DeepSeek`

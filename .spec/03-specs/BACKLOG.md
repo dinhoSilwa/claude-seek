@@ -1,4 +1,4 @@
-# Backlog — claude-seek
+# Backlog — orion
 
 > Fonte de verdade para todo trabalho pendente. Ordenado por prioridade dentro de cada epic.
 

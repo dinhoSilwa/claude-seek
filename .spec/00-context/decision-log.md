@@ -18,19 +18,19 @@
 
 ---
 
-### ADR-002 — Instalação self-contained em `~/.claude-seek/`
+### ADR-002 — Instalação self-contained em `~/.orion/`
 - **Data:** 2025-07-01 (estimado)
 - **Status:** accepted
 
 **Contexto:** O pacote npm precisa instalar `@anthropic-ai/claude-code` em runtime, não como dependência declarada, pois o tamanho seria proibitivo para o pacote npm.
 
-**Decisão:** O `bin/claude-seek` (wrapper) detecta se `~/.claude-seek/` existe. Se não, executa `install-claude-seek.sh` que cria o diretório, inicializa um `package.json` local e roda `npm install @anthropic-ai/claude-code`.
+**Decisão:** O `bin/orion` (wrapper) detecta se `~/.orion/` existe. Se não, executa `install-orion.sh` que cria o diretório, inicializa um `package.json` local e roda `npm install @anthropic-ai/claude-code`.
 
 **Consequências:**
 - (+) Pacote npm leve (sem bundling do Claude Code)
 - (+) Atualização independente do Claude Code
 - (-) Primeiro uso requer conexão à internet e tempo de instalação
-- (-) Cria estado fora do projeto (`~/`) que precisa de `uninstall-claude-seek.sh` para limpeza
+- (-) Cria estado fora do projeto (`~/`) que precisa de `uninstall-orion.sh` para limpeza
 
 ---
 
@@ -40,7 +40,7 @@
 
 **Contexto:** A chave DeepSeek precisa persistir entre sessões sem expor ao ambiente global.
 
-**Decisão:** Salvar em `~/.claude-seek/key` com permissões `600` (leitura apenas pelo dono). Suporte adicional via variável de ambiente `DEEPSEEK_API_KEY` com prioridade maior.
+**Decisão:** Salvar em `~/.orion/key` com permissões `600` (leitura apenas pelo dono). Suporte adicional via variável de ambiente `DEEPSEEK_API_KEY` com prioridade maior.
 
 **Consequências:**
 - (+) Chave não fica em variáveis de ambiente globais ou `.bashrc`
@@ -53,12 +53,12 @@
 - **Data:** 2025-07-01 (estimado)
 - **Status:** accepted
 
-**Contexto:** `@anthropic-ai/claude-code` é pesado. Declará-lo como dependência npm tornaria `npm install -g claude-seek` lento.
+**Contexto:** `@anthropic-ai/claude-code` é pesado. Declará-lo como dependência npm tornaria `npm install -g orion` lento.
 
-**Decisão:** `package.json` não declara `dependencies`. A instalação real acontece em runtime via `install-claude-seek.sh`.
+**Decisão:** `package.json` não declara `dependencies`. A instalação real acontece em runtime via `install-orion.sh`.
 
 **Consequências:**
-- (+) `npm install -g claude-seek` é instantâneo
+- (+) `npm install -g orion` é instantâneo
 - (-) Usuário só descobre a dependência Node.js/npm no primeiro uso
 - (-) Versão do `@anthropic-ai/claude-code` não é fixada (always latest)
 
@@ -68,7 +68,7 @@
 - **Data:** 2025-07-25
 - **Status:** proposed (pendente resolução)
 
-**Contexto:** `package.json` declara versão `1.0.2` enquanto `install-claude-seek.sh` instala e reporta `v1.3.0`. Causa confusão para usuários e para o npm.
+**Contexto:** `package.json` declara versão `1.0.2` enquanto `install-orion.sh` instala e reporta `v1.3.0`. Causa confusão para usuários e para o npm.
 
 **Decisão:** Pendente — sincronizar versões usando `package.json` como única fonte de verdade.
 

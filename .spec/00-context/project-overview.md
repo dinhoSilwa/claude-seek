@@ -1,7 +1,7 @@
 # Project Overview
 
 ## Nome do projeto
-claude-seek
+orion
 
 ## Objetivo
 Permitir o uso do **Claude Code** (CLI da Anthropic) com modelos da **DeepSeek** gratuitamente, redirecionando as variáveis de ambiente `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` e `ANTHROPIC_MODEL` para a API compatível com Anthropic da DeepSeek.
@@ -30,7 +30,7 @@ O usuário obtém um assistente de código com interface familiar do Claude Code
 - **Provedor externo:** DeepSeek (API) + Anthropic (Claude Code CLI)
 
 ## Links
-- Repositório: https://github.com/dinhoSilwa/claude-seek
-- npm: https://www.npmjs.com/package/claude-seek
+- Repositório: https://github.com/dinhoSilwa/orion
+- npm: https://www.npmjs.com/package/orion
 - DeepSeek API: https://platform.deepseek.com
 - Claude Code: https://www.npmjs.com/package/@anthropic-ai/claude-code

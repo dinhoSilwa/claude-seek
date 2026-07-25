@@ -13,7 +13,7 @@ Exibir progresso durante a seleção de modelo com indicação do que está send
 
 **Comportamento atual:**
 ```
-🚀 Starting claude-seek with model: deepseek-chat
+🚀 Starting orion with model: deepseek-chat
 ```
 (depois de 5-10s de silêncio)
 
@@ -23,13 +23,13 @@ Selecting model...
   → Testing deepseek-v4-pro... unavailable
   → Testing deepseek-v4-flash... unavailable  
   → Testing deepseek-chat... available
-🚀 Starting claude-seek with model: deepseek-chat
+🚀 Starting orion with model: deepseek-chat
 ```
 
 Usar `\r` para sobrescrever a linha em vez de imprimir múltiplas linhas se preferir output limpo.
 
 ## Arquivos relevantes
-- `install-claude-seek.sh` — função `select_model` (~linha 189) dentro do heredoc
+- `install-orion.sh` — função `select_model` (~linha 189) dentro do heredoc
 
 ## Definition of Done
 - [ ] Usuário vê progresso durante seleção de modelo

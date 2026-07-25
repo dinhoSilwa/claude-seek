@@ -6,13 +6,13 @@
 - **Status:** planned
 
 ## Contexto
-O CI testa no Windows mas apenas roda `bash install-claude-seek.sh` via Git Bash e imprime "Installation completed" sem validar nada. O `bin/claude-seek` é um script bash que não funciona nativamente no Windows sem Git Bash ou WSL. Usuários Windows que seguem o README pelo npm podem ficar presos.
+O CI testa no Windows mas apenas roda `bash install-orion.sh` via Git Bash e imprime "Installation completed" sem validar nada. O `bin/orion` é um script bash que não funciona nativamente no Windows sem Git Bash ou WSL. Usuários Windows que seguem o README pelo npm podem ficar presos.
 
 ## Descrição
 Investigar as opções para suporte Windows real:
 
 **Opção A — PowerShell wrapper**
-Criar `bin/claude-seek.cmd` ou `bin/claude-seek.ps1` que executa a mesma lógica para Windows nativo.
+Criar `bin/orion.cmd` ou `bin/orion.ps1` que executa a mesma lógica para Windows nativo.
 
 **Opção B — WSL como requisito documentado**
 Documentar explicitamente que Windows requer WSL2 ou Git Bash, com link de instalação.

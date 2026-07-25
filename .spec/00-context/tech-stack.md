@@ -5,20 +5,20 @@
 - npm (vem com Node.js)
 
 ## Linguagens
-- **Bash** — scripts principais (`install-claude-seek.sh`, `uninstall-claude-seek.sh`, wrapper `bin/claude-seek`)
+- **Bash** — scripts principais (`install-orion.sh`, `uninstall-orion.sh`, wrapper `bin/orion`)
 - **JSON** — `package.json`, configs gerados em runtime
 
 ## Dependência principal
 | Pacote | Versão | Papel |
 |--------|--------|-------|
-| `@anthropic-ai/claude-code` | latest | CLI Claude Code — instalado em `~/.claude-seek/node_modules/` no primeiro uso |
+| `@anthropic-ai/claude-code` | latest | CLI Claude Code — instalado em `~/.orion/node_modules/` no primeiro uso |
 
 Sem outras dependências de produção. O `package.json` do repositório não declara `dependencies`.
 
 ## Distribuição
-- **npm** — `npm install -g claude-seek` (recomendado)
-- **yarn** — `yarn global add claude-seek`
-- **git clone** — execução direta de `install-claude-seek.sh`
+- **npm** — `npm install -g orion` (recomendado)
+- **yarn** — `yarn global add orion`
+- **git clone** — execução direta de `install-orion.sh`
 
 ## Mecanismo central
 ```bash
@@ -37,8 +37,8 @@ O Claude Code aceita base URL customizada, permitindo substituir o provedor.
 
 ## Armazenamento em runtime
 ```
-~/.claude-seek/
-├── claude-seek        # executável principal (gerado pelo install)
+~/.orion/
+├── orion        # executável principal (gerado pelo install)
 ├── node_modules/      # @anthropic-ai/claude-code
 ├── key                # API key (chmod 600)
 ├── config.env         # configurações do usuário
@@ -47,7 +47,7 @@ O Claude Code aceita base URL customizada, permitindo substituir o provedor.
 ```
 
 ## Ferramentas de qualidade
-- **shellcheck** — lint dos scripts Bash (`install-claude-seek.sh`, `uninstall-claude-seek.sh`)
+- **shellcheck** — lint dos scripts Bash (`install-orion.sh`, `uninstall-orion.sh`)
 - **bats** (Bash Automated Testing System) — testes dos scripts
 
 ## CI/CD

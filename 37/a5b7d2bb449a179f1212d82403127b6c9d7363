@@ -1,0 +1,23 @@
+src/routing/history.ts
+  s_6a553aa6bb7c31::t_c86883aea5ebc7 1-44
+src/routing/router.ts
+  s_6a553aa6bb7c31::t_9a25c4e492d251 1-97
+src/routing/index.ts
+  s_6a553aa6bb7c31::t_d24ef2e92aef2e 1-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "37a5b7d2bb449a179f1212d82403127b6c9d7363",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

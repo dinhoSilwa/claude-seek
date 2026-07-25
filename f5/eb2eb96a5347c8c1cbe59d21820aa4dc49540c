@@ -1,0 +1,19 @@
+README.md
+  s_6a553aa6bb7c31::t_dcfc42acfa40d5 7,9,11,14,33-35,40-42,49-52,69-82,90,95,102,107,112,151-152,172,177,182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f5eb2eb96a5347c8c1cbe59d21820aa4dc49540c",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

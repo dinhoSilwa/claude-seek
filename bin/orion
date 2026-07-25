@@ -1,30 +1,35 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
-# This file is a wrapper that points to the actual orion installed in user's home
-# On first run, it will install the full orion to ~/.orion/
+'use strict';
 
-set -e
+const { execFileSync, spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
 
-INSTALL_DIR="$HOME/.orion"
+const INSTALL_DIR = path.join(os.homedir(), '.orion');
+const ORION_BIN = path.join(INSTALL_DIR, 'orion');
 
-# Check if already installed
-if [ -f "$INSTALL_DIR/orion" ]; then
-    exec "$INSTALL_DIR/orion" "$@"
-fi
+function run(bin, args) {
+    const child = spawn(bin, args, { stdio: 'inherit' });
+    child.on('exit', (code) => process.exit(code ?? 0));
+}
 
-# First run - install
-echo "🚀 First run detected. Installing orion..."
-echo ""
+if (fs.existsSync(ORION_BIN)) {
+    run('bash', [ORION_BIN, ...process.argv.slice(2)]);
+} else {
+    console.log('🚀 First run detected. Installing orion...\n');
+    fs.mkdirSync(INSTALL_DIR, { recursive: true });
 
-# Create directory
-mkdir -p "$INSTALL_DIR"
+    const installScript = path.join(__dirname, '..', 'install-orion.sh');
+    const dest = path.join(INSTALL_DIR, 'install-orion.sh');
+    fs.copyFileSync(installScript, dest);
+    fs.chmodSync(dest, '755');
 
-# Copy the installer and run it
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cp "$SCRIPT_DIR/../install-orion.sh" "$INSTALL_DIR/"
-
-cd "$INSTALL_DIR"
-./install-orion.sh
-
-# Run the installed version
-exec "$INSTALL_DIR/orion" "$@"
+    try {
+        execFileSync('bash', [dest], { stdio: 'inherit', cwd: INSTALL_DIR });
+        run('bash', [ORION_BIN, ...process.argv.slice(2)]);
+    } catch {
+        process.exit(1);
+    }
+}

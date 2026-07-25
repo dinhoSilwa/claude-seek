@@ -1,0 +1,25 @@
+install-orion.sh
+  s_6a553aa6bb7c31::t_a7c61acfd33675 15-16,19,49,69,99,133,304,330,367,411,432,459,462-464,483-485,501,509,514,521,526,534,543,554,582-583,594-595,598-600
+uninstall-orion.sh
+  s_6a553aa6bb7c31::t_baf7b6c7f168a4 1-59
+bin/orion
+  s_6a553aa6bb7c31::t_6df5806ca22451 1-30
+package.json
+  s_6a553aa6bb7c31::t_a7254a5c1b98f9 2,4,6,20,28-29,33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5a63797fcca8ef91116622a8bbc7a6a0064f8800",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}

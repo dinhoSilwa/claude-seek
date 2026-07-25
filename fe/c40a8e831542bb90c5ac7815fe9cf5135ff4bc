@@ -1,0 +1,22 @@
+README.md
+  s_6a553aa6bb7c31::t_52421beb4d0536 11,14
+  s_6a553aa6bb7c31::t_6bc644bfb20732 33,40
+package.json
+  s_6a553aa6bb7c31::t_e44666045d3d5f 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fec40a8e831542bb90c5ac7815fe9cf5135ff4bc",
+  "prompts": {},
+  "sessions": {
+    "s_6a553aa6bb7c31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6080ae8b-c078-440e-b713-8e981a9157c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}
